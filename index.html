@@ -150,6 +150,12 @@
       background-color: rgba(0,0,0,0.85);
       justify-content: center;
       align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .video-container {
@@ -162,9 +168,11 @@
       box-shadow: 0 0 25px rgba(86, 204, 242, 0.4);
     }
 
-    .video-container iframe {
+    iframe, video {
       width: 100%;
       height: 450px;
+      border: none;
+      outline: none;
     }
 
     .close-btn {
@@ -185,7 +193,7 @@
     @media (max-width: 768px) {
       .tabs { flex-direction: column; gap: 25px; }
       .tab { width: 80%; }
-      .video-container iframe { height: 250px; }
+      iframe, video { height: 250px; }
     }
   </style>
 </head>
@@ -231,31 +239,33 @@
     © 2025 Nathan Shankar — University of Manchester
   </footer>
 
-  <!-- Video Popups -->
+  <!-- YouTube Video Popup -->
   <div class="video-modal" id="goals-modal">
     <div class="video-container">
       <span class="close-btn" data-close="goals-modal">&times;</span>
-      <iframe src="https://www.youtube.com/embed/RJ8qQAx-SoI?autoplay=1" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/RJ8qQAx-SoI?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
   </div>
 
+  <!-- Local Video Popup: nav_in_dark.mp4 -->
   <div class="video-modal" id="demo-modal">
     <div class="video-container">
       <span class="close-btn" data-close="demo-modal">&times;</span>
-      <iframe src="https://www.youtube.com/embed/YOUR_EXPLORATION_DEMO_VIDEO?autoplay=1" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen></iframe>
+      <video id="nav-video" controls>
+        <source src="nav_in_dark.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
   </div>
 
+  <!-- Local Video Popup: ir_object_detect.mp4 -->
   <div class="video-modal" id="ir-modal">
     <div class="video-container">
       <span class="close-btn" data-close="ir-modal">&times;</span>
-      <iframe src="https://www.youtube.com/embed/YOUR_IR_CAMERA_DEMO_VIDEO?autoplay=1" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen></iframe>
+      <video id="ir-video" controls>
+        <source src="ir_object_detect.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
   </div>
 
@@ -265,7 +275,9 @@
       const modal = document.getElementById(id);
       modal.style.display = 'none';
       const iframe = modal.querySelector('iframe');
-      iframe.src = iframe.src; // stop video
+      const video = modal.querySelector('video');
+      if (iframe) iframe.src = iframe.src; // stop YouTube video
+      if (video) { video.pause(); video.currentTime = 0; } // stop local video
     };
 
     document.getElementById('goals-tab').onclick = () => openModal('goals-modal');
