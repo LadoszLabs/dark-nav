@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autonomous Navigation in Dark Unknown Environments using Vision</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0b0f17, #1c2230);
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      margin-top: 60px;
+      max-width: 800px;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      background: linear-gradient(to right, #56ccf2, #2f80ed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1rem;
+      color: #c5c5c5;
+    }
+
+    .supervisors {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: #a5a5a5;
+    }
+
+    a.email-link {
+      color: #56ccf2;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a.email-link:hover {
+      color: #2f80ed;
+      text-decoration: underline;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin: 70px 20px;
+    }
+
+    .tab {
+      background: #1e2738;
+      border-radius: 15px;
+      width: 260px;
+      height: 160px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .tab::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #2f80ed, #56ccf2);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .tab:hover {
+      transform: translateY(-6px) scale(1.05);
+      color: #fff;
+    }
+
+    .tab:hover::before {
+      opacity: 1;
+    }
+
+    .tab:nth-child(1) { border: 1px solid #56ccf2; }
+    .tab:nth-child(2) { border: 1px solid #2f80ed; }
+    .tab:nth-child(3) { border: 1px solid #56ccf2; }
+    .tab:nth-child(4) { border: 1px solid #2f80ed; }
+
+    .summary {
+      max-width: 850px;
+      text-align: justify;
+      line-height: 1.6;
+      color: #d6d6d6;
+      margin: 40px 20px 80px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 25px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .summary h2 {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #56ccf2;
+      margin-bottom: 15px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #808080;
+      margin-bottom: 25px;
+    }
+
+    /* Popup Modal Styles */
+    .video-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .video-container {
+      position: relative;
+      width: 80%;
+      max-width: 800px;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 25px rgba(86, 204, 242, 0.4);
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 450px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      color: #fff;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .close-btn:hover {
+      color: #56ccf2;
+    }
+
+    @media (max-width: 768px) {
+      .tabs { flex-direction: column; gap: 25px; }
+      .tab { width: 80%; }
+      .video-container iframe { height: 250px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Autonomous Navigation in Dark Unknown Environments using Vision</h1>
+    <p><strong>PhD Student:</strong>
+      <a href="mailto:nathan.shankar@postgrad.manchester.ac.uk" class="email-link">Nathan Shankar</a>
+    </p>
+    <p class="supervisors">
+      Supervisors:
+      <a href="mailto:pawel.ladosz@manchester.ac.uk" class="email-link">Pawel Ladosz</a> &nbsp; | &nbsp;
+      <a href="mailto:hujun.yin@manchester.ac.uk" class="email-link">Hujun Yin</a>
+    </p>
+  </header>
+
+  <div class="tabs">
+    <div class="tab" id="goals-tab">Research Goals</div>
+    <div class="tab" id="demo-tab">Autonomous Exploration in the Dark Demo</div>
+    <div class="tab" id="ir-tab">Object Detection using Infrared Camera Demo</div>
+    <a href="https://arxiv.org/pdf/2510.04883" target="_blank" class="tab">Research Paper</a>
+  </div>
+
+  <section class="summary">
+    <h2>About the Research</h2>
+    <p>
+      Robots struggle when the lights go out — cameras fail, maps disappear, and navigation breaks down. 
+      This research aims to give robots the ability to see and move reliably in complete darkness by 
+      combining infrared sensing, intelligent image enhancement, and spatial awareness.
+    </p>
+    <br>
+    <p>
+      The goal is to make vision reliable anywhere without relying on a multitude of sensors. 
+      By leveraging infrared perception and learning-based enhancement, robots can reconstruct 
+      their surroundings, recognize objects, and navigate safely in environments where traditional 
+      vision systems fail. This advancement has significant implications for autonomous exploration, 
+      search-and-rescue operations, and planetary robotics.
+    </p>
+  </section>
+
+  <footer>
+    © 2025 Nathan Shankar — University of Manchester
+  </footer>
+
+  <!-- Video Popups -->
+  <div class="video-modal" id="goals-modal">
+    <div class="video-container">
+      <span class="close-btn" data-close="goals-modal">&times;</span>
+      <iframe src="https://www.youtube.com/embed/RJ8qQAx-SoI?autoplay=1" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div class="video-modal" id="demo-modal">
+    <div class="video-container">
+      <span class="close-btn" data-close="demo-modal">&times;</span>
+      <iframe src="https://www.youtube.com/embed/YOUR_EXPLORATION_DEMO_VIDEO?autoplay=1" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div class="video-modal" id="ir-modal">
+    <div class="video-container">
+      <span class="close-btn" data-close="ir-modal">&times;</span>
+      <iframe src="https://www.youtube.com/embed/YOUR_IR_CAMERA_DEMO_VIDEO?autoplay=1" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script>
+    const openModal = id => document.getElementById(id).style.display = 'flex';
+    const closeModal = id => {
+      const modal = document.getElementById(id);
+      modal.style.display = 'none';
+      const iframe = modal.querySelector('iframe');
+      iframe.src = iframe.src; // stop video
+    };
+
+    document.getElementById('goals-tab').onclick = () => openModal('goals-modal');
+    document.getElementById('demo-tab').onclick = () => openModal('demo-modal');
+    document.getElementById('ir-tab').onclick = () => openModal('ir-modal');
+
+    document.querySelectorAll('.close-btn').forEach(btn => {
+      btn.addEventListener('click', e => closeModal(e.target.dataset.close));
+    });
+
+    window.onclick = e => {
+      if (e.target.classList.contains('video-modal')) {
+        closeModal(e.target.id);
+      }
+    };
+  </script>
+</body>
+</html>
