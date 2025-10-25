@@ -319,18 +319,21 @@
   </div>
 
   <script>
-    // Sticky bar logic
+    // Sticky header appears when *any* part of header is out of view
     const header = document.getElementById('header');
     const stickyBar = document.getElementById('stickyBar');
 
-    window.addEventListener('scroll', () => {
-      const headerRect = header.getBoundingClientRect();
-      if (headerRect.bottom <= 60) {
-        stickyBar.classList.add('visible');
-      } else {
-        stickyBar.classList.remove('visible');
-      }
-    });
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) {
+          stickyBar.classList.add('visible');
+        } else {
+          stickyBar.classList.remove('visible');
+        }
+      });
+    }, { threshold: 1.0 });
+
+    observer.observe(header);
 
     // Modal video logic
     const openModal = id => {
