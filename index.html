@@ -1,313 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Autonomous Navigation in Dark Unknown Environments using Vision</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autonomous Navigation in Dark Unknown Environments using Vision</title>
+<style>
     body {
-      background: linear-gradient(135deg, #0b0f17, #1c2230);
-      color: #f5f5f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      overflow-x: hidden;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #0d0d0d;
+        color: #f5f5f5;
+        overflow-x: hidden;
     }
 
+    /* ---------- Header ---------- */
     header {
-      text-align: center;
-      margin-top: 60px;
-      max-width: 800px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(20, 20, 20, 0.95);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 2rem;
+        transition: all 0.4s ease;
+        z-index: 1000;
     }
 
-    header h1 {
-      font-size: 2.2rem;
-      font-weight: 600;
-      background: linear-gradient(to right, #56ccf2, #2f80ed);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
+    header.shrink {
+        padding: 0.5rem 1.5rem;
+        background: rgba(15, 15, 15, 0.98);
     }
 
-    header p {
-      font-size: 1rem;
-      color: #c5c5c5;
+    .header-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        text-align: center;
+        flex: 1;
+        transition: font-size 0.3s ease;
+    }
+
+    header.shrink .header-title {
+        font-size: 1.2rem;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+        transition: width 0.3s ease, height 0.3s ease;
+    }
+
+    header.shrink .logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* ---------- Content ---------- */
+    main {
+        padding-top: 130px;
+        max-width: 1200px;
+        margin: auto;
+        text-align: center;
     }
 
     .supervisors {
-      margin-top: 10px;
-      font-size: 0.95rem;
-      color: #a5a5a5;
+        font-size: 1.1rem;
+        color: #ccc;
+        margin-top: 10px;
     }
 
-    a.email-link {
-      color: #56ccf2;
-      text-decoration: none;
-      transition: color 0.3s ease;
+    .about {
+        margin-top: 3rem;
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: #e0e0e0;
     }
 
-    a.email-link:hover {
-      color: #2f80ed;
-      text-decoration: underline;
-    }
-
-    .tabs {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 40px;
-      flex-wrap: wrap;
-      margin: 70px 20px;
+    /* ---------- Tabs ---------- */
+    .tab-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4rem;
+        gap: 20px;
     }
 
     .tab {
-      background: #1e2738;
-      border-radius: 15px;
-      width: 260px;
-      height: 160px;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #ffffff;
-      text-decoration: none;
-      font-size: 1.1rem;
-      font-weight: 500;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .tab::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 15px;
-      background: linear-gradient(135deg, #2f80ed, #56ccf2);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: -1;
+        flex: 1;
+        background: #1a1a1a;
+        border-radius: 15px;
+        padding: 2rem;
+        cursor: pointer;
+        transition: transform 0.3s ease, background 0.3s ease;
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
     }
 
     .tab:hover {
-      transform: translateY(-6px) scale(1.05);
-      color: #fff;
+        background: #252525;
+        transform: translateY(-5px);
     }
 
-    .tab:hover::before {
-      opacity: 1;
-    }
-
-    .tab:nth-child(1) { border: 1px solid #56ccf2; }
-    .tab:nth-child(2) { border: 1px solid #2f80ed; }
-    .tab:nth-child(3) { border: 1px solid #56ccf2; }
-    .tab:nth-child(4) { border: 1px solid #2f80ed; }
-
-    .summary {
-      max-width: 850px;
-      text-align: justify;
-      line-height: 1.6;
-      color: #d6d6d6;
-      margin: 40px 20px 80px 20px;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 25px 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .summary h2 {
-      text-align: center;
-      font-size: 1.5rem;
-      color: #56ccf2;
-      margin-bottom: 15px;
-    }
-
-    footer {
-      text-align: center;
-      font-size: 0.85rem;
-      color: #808080;
-      margin-bottom: 25px;
-    }
-
-    /* Popup Modal Styles */
-    .video-modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.85);
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .tab h3 {
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+        color: #fff;
     }
 
     .video-container {
-      position: relative;
-      width: 80%;
-      max-width: 800px;
-      background: #000;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 25px rgba(86, 204, 242, 0.4);
+        margin-top: 3rem;
     }
 
-    iframe, video {
-      width: 100%;
-      height: 450px;
-      border: none;
-      outline: none;
+    video, iframe {
+        width: 90%;
+        height: 480px;
+        border-radius: 12px;
+        border: 2px solid #333;
     }
 
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      color: #fff;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: color 0.3s ease;
-    }
-
-    .close-btn:hover {
-      color: #56ccf2;
+    footer {
+        margin-top: 4rem;
+        padding: 2rem;
+        color: #999;
+        font-size: 0.9rem;
     }
 
     @media (max-width: 768px) {
-      .tabs { flex-direction: column; gap: 25px; }
-      .tab { width: 80%; }
-      iframe, video { height: 250px; }
+        .tab-container {
+            flex-direction: column;
+        }
+
+        video, iframe {
+            height: 260px;
+        }
+
+        .header-title {
+            font-size: 1.3rem;
+        }
     }
-  </style>
+</style>
 </head>
-
 <body>
-  <header>
-    <h1>Autonomous Navigation in Dark Unknown Environments using Vision</h1>
-    <p><strong>PhD Student:</strong>
-      <a href="mailto:nathan.shankar@postgrad.manchester.ac.uk" class="email-link">Nathan Shankar</a>
-    </p>
-    <p class="supervisors">
-      Supervisors:
-      <a href="mailto:pawel.ladosz@manchester.ac.uk" class="email-link">Pawel Ladosz</a> &nbsp; | &nbsp;
-      <a href="mailto:hujun.yin@manchester.ac.uk" class="email-link">Hujun Yin</a>
-    </p>
-  </header>
 
-  <div class="tabs">
-    <div class="tab" id="goals-tab">Research Goals</div>
-    <div class="tab" id="demo-tab">Autonomous Exploration in the Dark Demo</div>
-    <div class="tab" id="ir-tab">Object Detection using Infrared Camera Demo</div>
-    <a href="https://arxiv.org/pdf/2510.04883" target="_blank" class="tab">Research Paper</a>
-  </div>
+<header id="main-header">
+    <img src="images/uom.png" alt="Left Logo" class="logo">
+    <div class="header-title">Autonomous Navigation in Dark Unknown Environments using Vision</div>
+    <img src="images/raico.png" alt="Right Logo" class="logo">
+</header>
 
-  <section class="summary">
-    <h2>About the Research</h2>
-    <p>
-      Robots struggle when the lights go out, resulting in camera failure, loss of localization, and breakdown of navigation systems. This research aims to give robots the ability to perceive and navigate reliably in complete darkness by combining infrared sensing, intelligent image enhancement, and spatial awareness.
-    </p>
-    <br>
-    <p>
-      The goal is to make vision reliable anywhere without relying on a multitude of sensors. By leveraging infrared perception and learning-based enhancement, robots can reconstruct their surroundings, recognize objects, and navigate safely in environments where conventional vision fails. This research has significant implications for autonomous exploration, search and rescue, warehouse fleets, nuclear inspection, and planetary robotics.
-    </p>
-  </section>
-
-  <footer>
-    © 2025 Nathan Shankar — University of Manchester
-  </footer>
-
-  <!-- YouTube Video Popup -->
-  <div class="video-modal" id="goals-modal">
-    <div class="video-container">
-      <span class="close-btn" data-close="goals-modal">&times;</span>
-      <iframe id="goals-iframe" data-src="https://www.youtube.com/embed/RJ8qQAx-SoI?autoplay=1" allow="encrypted-media" allowfullscreen></iframe>
+<main>
+    <div class="supervisors">
+        Supervisor: Dr. Pawel Ladosz &nbsp;&nbsp;|&nbsp;&nbsp; Co-supervisor: Prof. Hujun Yin<br>
+        PhD Student: Nathan Shankar
     </div>
-  </div>
 
-  <!-- Local Video Popup: nav_in_dark.mp4 -->
-  <div class="video-modal" id="demo-modal">
-    <div class="video-container">
-      <span class="close-btn" data-close="demo-modal">&times;</span>
-      <video id="nav-video" controls>
-        <source src="nav_in_dark.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+    <section class="about">
+        <p>
+            Robots struggle when the lights go out—cameras fail, maps disappear, and navigation breaks down.
+            This research focuses on giving robots the ability to see and move reliably in complete darkness.
+            By combining infrared sensing, intelligent image enhancement, and spatial awareness, this system
+            enables robots to understand their surroundings even when there’s no visible light.
+        </p>
+        <p>
+            The significance of this research lies in making vision-based navigation robust and reliable
+            in all lighting conditions, reducing the need for complex sensor arrays and enabling low-cost,
+            vision-only autonomous systems.
+        </p>
+    </section>
+
+    <div class="tab-container">
+        <div class="tab" onclick="showContent('goals')">
+            <h3>Research Goals</h3>
+            <p>Watch the overview of the research objectives.</p>
+        </div>
+        <div class="tab" onclick="showContent('exploration')">
+            <h3>Exploration Demo</h3>
+            <p>View the live exploration and dark navigation demo.</p>
+        </div>
+        <div class="tab" onclick="showContent('paper')">
+            <h3>Research Paper</h3>
+            <p>Read the detailed paper describing this research.</p>
+        </div>
     </div>
-  </div>
 
-  <!-- Local Video Popup: ir_object_detect.mp4 -->
-  <div class="video-modal" id="ir-modal">
-    <div class="video-container">
-      <span class="close-btn" data-close="ir-modal">&times;</span>
-      <video id="ir-video" controls>
-        <source src="ir_object_detect.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+    <div class="video-container" id="content-display">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/RJ8qQAx-SoI?si=W5WRsp-6FLB4QqU3"
+        title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+        encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen></iframe>
     </div>
-  </div>
+</main>
 
-  <script>
-    const openModal = id => {
-      closeAllVideos(); // stop any current playback
-      const modal = document.getElementById(id);
-      modal.style.display = 'flex';
+<footer>
+    © 2025 Nathan Shankar | University of Manchester
+</footer>
 
-      const iframe = modal.querySelector('iframe');
-      if (iframe) iframe.src = iframe.dataset.src;
+<script>
+    const header = document.getElementById("main-header");
+    const contentDisplay = document.getElementById("content-display");
 
-      const video = modal.querySelector('video');
-      if (video) video.play();
-    };
-
-    const closeModal = id => {
-      const modal = document.getElementById(id);
-      modal.style.display = 'none';
-      const iframe = modal.querySelector('iframe');
-      const video = modal.querySelector('video');
-      if (iframe) iframe.src = '';
-      if (video) { video.pause(); video.currentTime = 0; }
-    };
-
-    const closeAllVideos = () => {
-      document.querySelectorAll('.video-modal').forEach(m => {
-        const iframe = m.querySelector('iframe');
-        const video = m.querySelector('video');
-        if (iframe) iframe.src = '';
-        if (video) { video.pause(); video.currentTime = 0; }
-        m.style.display = 'none';
-      });
-    };
-
-    document.getElementById('goals-tab').onclick = () => openModal('goals-modal');
-    document.getElementById('demo-tab').onclick = () => openModal('demo-modal');
-    document.getElementById('ir-tab').onclick = () => openModal('ir-modal');
-
-    document.querySelectorAll('.close-btn').forEach(btn => {
-      btn.addEventListener('click', e => closeModal(e.target.dataset.close));
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 80) {
+            header.classList.add("shrink");
+        } else {
+            header.classList.remove("shrink");
+        }
     });
 
-    window.onclick = e => {
-      if (e.target.classList.contains('video-modal')) {
-        closeModal(e.target.id);
-      }
-    };
-  </script>
+    function showContent(type) {
+        if (type === 'goals') {
+            contentDisplay.innerHTML = `
+                <iframe width="560" height="315"
+                src="https://www.youtube.com/embed/RJ8qQAx-SoI?si=W5WRsp-6FLB4QqU3"
+                title="Research Goals" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+                encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>`;
+        } else if (type === 'exploration') {
+            contentDisplay.innerHTML = `
+                <video controls>
+                    <source src="nav_in_dark.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>`;
+        } else if (type === 'paper') {
+            contentDisplay.innerHTML = `
+                <video controls>
+                    <source src="ir_object_detect.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>`;
+        }
+    }
+</script>
+
 </body>
 </html>
