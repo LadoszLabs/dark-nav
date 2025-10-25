@@ -73,8 +73,10 @@
     .gallery-section { max-width: 950px; margin: 40px auto; text-align: center; }
     .gallery-section h2 { font-size: 1.5rem; color: #56ccf2; margin-bottom: 25px; }
     .gallery-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px; padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      padding: 0 20px;
     }
     .gallery-item {
       position: relative; cursor: pointer; border-radius: 12px; overflow: hidden;
@@ -115,19 +117,10 @@
 
     footer { text-align: center; font-size: 0.85rem; color: #808080; margin: 40px 0; }
 
-    /* VIDEO MODALS */
-    .video-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1001; }
-    .video-container { position: relative; width: 80%; max-width: 800px; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 0 25px rgba(86,204,242,0.4); }
-    iframe, video { width: 100%; height: 450px; border: none; outline: none; }
-    .close-btn { position: absolute; top: 10px; right: 15px; color: #fff; font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
-    .close-btn:hover { color: #56ccf2; }
-
     @media (max-width: 768px) {
       .tabs { flex-direction: column; gap: 25px; }
       .tab { width: 80%; }
-      iframe, video { height: 250px; }
       .corner-logo { display: none; }
-      .sticky-bar { padding: 8px 20px; }
     }
   </style>
 </head>
@@ -150,14 +143,12 @@
     </p>
   </header>
 
-  <!-- Sticky Header -->
   <div class="sticky-bar" id="stickyBar">
     <img src="images/uom.png" alt="Left Logo" class="sticky-logo">
     <div class="sticky-title">Autonomous Navigation in Dark Unknown Environments using Vision</div>
     <img src="images/raico.svg" alt="Right Logo" class="sticky-logo">
   </div>
 
-  <!-- Tabs -->
   <div class="tabs">
     <div class="tab" id="goals-tab">Research Goals</div>
     <div class="tab" id="demo-tab">Autonomous Exploration in the Dark Demo</div>
@@ -165,7 +156,6 @@
     <a href="https://arxiv.org/pdf/2510.04883" target="_blank" class="tab">Research Paper</a>
   </div>
 
-  <!-- Summary -->
   <section class="summary">
     <h2>About the Research</h2>
     <p>
@@ -182,7 +172,6 @@
     </p>
   </section>
 
-  <!-- GALLERY -->
   <section class="gallery-section">
     <h2>Research Gallery</h2>
     <div class="gallery-grid" id="gallery"></div>
@@ -190,7 +179,7 @@
 
   <footer>© 2025 Nathan Shankar — University of Manchester</footer>
 
-  <!-- Image Modal -->
+  <!-- IMAGE MODAL -->
   <div class="image-modal" id="imageModal">
     <span class="close-modal" id="closeImageModal">&times;</span>
     <img id="modalImg" src="" alt="">
@@ -199,26 +188,6 @@
       <textarea id="userComment" rows="2" placeholder="Add a comment..."></textarea>
       <button class="like-btn" id="likeBtn">❤️ Like (<span id="likeCount">0</span>)</button>
       <div class="comments" id="commentSection"></div>
-    </div>
-  </div>
-
-  <!-- Video Modals -->
-  <div class="video-modal" id="goals-modal">
-    <div class="video-container">
-      <span class="close-btn" data-close="goals-modal">&times;</span>
-      <iframe id="goals-iframe" data-src="https://www.youtube.com/embed/RJ8qQAx-SoI?autoplay=1"></iframe>
-    </div>
-  </div>
-  <div class="video-modal" id="demo-modal">
-    <div class="video-container">
-      <span class="close-btn" data-close="demo-modal">&times;</span>
-      <video id="nav-video" controls><source src="nav_in_dark.mp4" type="video/mp4"></video>
-    </div>
-  </div>
-  <div class="video-modal" id="ir-modal">
-    <div class="video-container">
-      <span class="close-btn" data-close="ir-modal">&times;</span>
-      <video id="ir-video" controls><source src="ir_object_detect.mp4" type="video/mp4"></video>
     </div>
   </div>
 
@@ -234,31 +203,6 @@
     }, { threshold: Array.from({ length: 100 }, (_, i) => i / 100) });
     observer.observe(header);
 
-    // Modal video logic
-    const openModal = id => {
-      closeAllVideos();
-      const modal = document.getElementById(id);
-      modal.style.display = 'flex';
-      const iframe = modal.querySelector('iframe');
-      if (iframe) iframe.src = iframe.dataset.src;
-      const video = modal.querySelector('video');
-      if (video) video.play();
-    };
-    const closeModal = id => {
-      const modal = document.getElementById(id);
-      modal.style.display = 'none';
-      const iframe = modal.querySelector('iframe');
-      const video = modal.querySelector('video');
-      if (iframe) iframe.src = '';
-      if (video) { video.pause(); video.currentTime = 0; }
-    };
-    const closeAllVideos = () => document.querySelectorAll('.video-modal').forEach(m => closeModal(m.id));
-    document.getElementById('goals-tab').onclick = () => openModal('goals-modal');
-    document.getElementById('demo-tab').onclick = () => openModal('demo-modal');
-    document.getElementById('ir-tab').onclick = () => openModal('ir-modal');
-    document.querySelectorAll('.close-btn').forEach(btn => btn.addEventListener('click', e => closeModal(e.target.dataset.close)));
-    window.onclick = e => { if (e.target.classList.contains('video-modal')) closeModal(e.target.id); };
-
     // ==== GALLERY LOGIC ====
     const gallery = document.getElementById('gallery');
     const imageModal = document.getElementById('imageModal');
@@ -270,22 +214,27 @@
     const commentSection = document.getElementById('commentSection');
     const closeImageModal = document.getElementById('closeImageModal');
 
-    const photos = [
-      "uploads/img1.jpg", "uploads/img2.jpg", "uploads/img3.jpg",
-      "uploads/img4.jpg", "uploads/img5.jpg", "uploads/img6.jpg"
-    ]; // add or auto-generate list as needed
-
     const photoData = {};
-    photos.forEach(src => {
-      const div = document.createElement('div');
-      div.className = 'gallery-item';
-      const img = document.createElement('img');
-      img.src = src;
-      div.appendChild(img);
-      div.onclick = () => openImageModal(src);
-      gallery.appendChild(div);
-      photoData[src] = { likes: 0, comments: [] };
-    });
+
+    // Fetch image list automatically
+    fetch('uploads/index.json')
+      .then(res => res.json())
+      .then(photos => {
+        photos.forEach(src => {
+          const div = document.createElement('div');
+          div.className = 'gallery-item';
+          const img = document.createElement('img');
+          img.src = src;
+          div.appendChild(img);
+          div.onclick = () => openImageModal(src);
+          gallery.appendChild(div);
+          photoData[src] = { likes: 0, comments: [] };
+        });
+      })
+      .catch(err => {
+        console.error("Could not load image list:", err);
+        gallery.innerHTML = "<p style='color:#999;'>No images found in uploads folder.</p>";
+      });
 
     function openImageModal(src) {
       modalImg.src = src;
