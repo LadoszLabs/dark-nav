@@ -5,297 +5,309 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Autonomous Navigation in Dark Unknown Environments using Vision</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
     body {
       background: linear-gradient(135deg, #0b0f17, #1c2230);
       color: #f5f5f5;
-      overflow-x: hidden;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh; overflow-x: hidden;
     }
 
-    header {
-      position: relative;
-      text-align: center;
-      padding: 40px 20px 20px;
-      background: transparent;
-      transition: all 0.4s ease;
-    }
-
-    header img {
-      position: absolute;
-      top: 25px;
-      width: 80px;
-      transition: all 0.4s ease;
-    }
-
-    .logo-left { left: 30px; }
-    .logo-right { right: 30px; }
-
+    /* HEADER */
+    header { margin-top: 60px; max-width: 1000px; width: 90%; text-align: center; }
+    .header-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .corner-logo { height: 70px; object-fit: contain; }
     header h1 {
-      font-size: 2.2rem;
-      font-weight: 600;
+      flex: 1; font-size: 2.2rem; font-weight: 600;
       background: linear-gradient(to right, #56ccf2, #2f80ed);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-align: center; margin: 0 10px;
     }
+    header p { font-size: 1rem; color: #c5c5c5; margin-top: 8px; }
+    .supervisors { margin-top: 6px; font-size: 0.95rem; color: #a5a5a5; }
+    a.email-link { color: #56ccf2; text-decoration: none; transition: color 0.3s ease; }
+    a.email-link:hover { color: #2f80ed; text-decoration: underline; }
 
-    .supervisors {
-      margin-top: 10px;
-      font-size: 0.95rem;
-      color: #a5a5a5;
+    /* STICKY BAR */
+    .sticky-bar {
+      position: fixed; top: 0; left: 0; width: 100%; height: 65px;
+      background: rgba(15, 20, 30, 0.9); backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 25px; opacity: 0; pointer-events: none;
+      transform: translateY(-100%); transition: opacity 0.4s ease, transform 0.4s ease; z-index: 100;
     }
-
-    a.email-link {
-      color: #56ccf2;
-      text-decoration: none;
-    }
-
-    a.email-link:hover {
-      color: #2f80ed;
-      text-decoration: underline;
-    }
-
-    /* Sticky Header */
-    .sticky-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 65px;
-      background: rgba(20, 25, 35, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      transform: translateY(-100%);
-      transition: transform 0.3s ease;
-      box-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .sticky-header.visible {
-      transform: translateY(0);
-    }
-
-    .sticky-header img {
-      width: 45px;
-      margin: 0 20px;
-    }
-
-    .sticky-header h2 {
-      font-size: 1.2rem;
+    .sticky-bar.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
+    .sticky-logo { height: 50px; object-fit: contain; }
+    .sticky-title {
+      font-size: 1rem; font-weight: 500; flex: 1;
       background: linear-gradient(to right, #56ccf2, #2f80ed);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* Tabs */
-    .tabs {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 30px;
-      margin: 60px 20px;
-    }
-
-    .tab {
-      background: #1e2738;
-      border-radius: 15px;
-      width: 260px;
-      height: 150px;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #ffffff;
-      font-size: 1.1rem;
-      font-weight: 500;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      cursor: pointer;
-      position: relative;
     }
 
-    .tab:hover {
-      transform: translateY(-6px) scale(1.05);
-      box-shadow: 0 0 25px rgba(86, 204, 242, 0.7);
+    /* TABS */
+    .tabs { display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; margin: 70px 20px; }
+    .tab {
+      background: #1e2738; border-radius: 15px; width: 260px; height: 160px; text-align: center;
+      display: flex; justify-content: center; align-items: center; color: #fff; text-decoration: none;
+      font-size: 1.1rem; font-weight: 500; box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      transition: all 0.3s ease; position: relative; cursor: pointer;
     }
-
-    /* Gallery */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 20px;
+    .tab::before {
+      content: ''; position: absolute; inset: 0; border-radius: 15px;
+      background: linear-gradient(135deg, #2f80ed, #56ccf2); opacity: 0; transition: opacity 0.3s ease; z-index: -1;
     }
+    .tab:hover { transform: translateY(-6px) scale(1.05); color: #fff; }
+    .tab:hover::before { opacity: 1; }
 
-    .gallery img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* SUMMARY */
+    .summary {
+      max-width: 850px; text-align: justify; line-height: 1.6; color: #d6d6d6;
+      margin: 40px 20px 40px 20px; background: rgba(255,255,255,0.05);
+      padding: 25px 30px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
+    .summary h2 { text-align: center; font-size: 1.5rem; color: #56ccf2; margin-bottom: 15px; }
 
-    .gallery img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(86, 204, 242, 0.6);
+    /* GALLERY */
+    .gallery-section { max-width: 950px; margin: 40px auto; text-align: center; }
+    .gallery-section h2 { font-size: 1.5rem; color: #56ccf2; margin-bottom: 25px; }
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px; padding: 0 20px;
     }
-
-    /* Modals */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
+    .gallery-item {
+      position: relative; cursor: pointer; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: transform 0.3s ease;
     }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+    .gallery-item:hover img { transform: scale(1.05); }
 
-    .modal-content {
-      position: relative;
-      width: 80%;
-      max-width: 900px;
-      border-radius: 10px;
-      overflow: hidden;
+    /* IMAGE MODAL */
+    .image-modal {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+      justify-content: center; align-items: center; flex-direction: column; z-index: 2000;
     }
-
-    .modal-content video,
-    .modal-content iframe {
-      width: 100%;
-      height: 500px;
-      border: none;
-      display: block;
+    .image-modal img {
+      max-width: 90%; max-height: 70vh; border-radius: 10px;
+      box-shadow: 0 0 25px rgba(86, 204, 242, 0.4);
     }
-
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 2rem;
-      color: #fff;
-      cursor: pointer;
+    .image-details {
+      margin-top: 20px; background: rgba(255,255,255,0.05);
+      padding: 15px 20px; border-radius: 10px; width: 90%; max-width: 600px;
     }
-
-    @media (max-width: 900px) {
-      .gallery { grid-template-columns: repeat(2, 1fr); }
-      .gallery img { height: 180px; }
+    .image-details input, .image-details textarea {
+      width: 100%; background: rgba(0,0,0,0.3); border: 1px solid #444;
+      border-radius: 6px; padding: 8px; margin-top: 8px; color: #fff;
     }
-
-    @media (max-width: 600px) {
-      .gallery { grid-template-columns: 1fr; }
-      .gallery img { height: 160px; }
+    .like-btn {
+      background: linear-gradient(135deg, #56ccf2, #2f80ed); border: none;
+      border-radius: 6px; color: #fff; padding: 8px 14px; cursor: pointer;
+      margin-top: 10px; transition: transform 0.2s ease;
     }
+    .like-btn:hover { transform: scale(1.05); }
+    .comments { margin-top: 15px; text-align: left; max-height: 150px; overflow-y: auto; font-size: 0.9rem; }
+    .close-modal {
+      position: absolute; top: 15px; right: 25px; font-size: 30px; color: #fff;
+      cursor: pointer; font-weight: bold; transition: color 0.3s ease;
+    }
+    .close-modal:hover { color: #56ccf2; }
 
+    footer { text-align: center; font-size: 0.85rem; color: #808080; margin: 40px 0; }
+
+    /* VIDEO MODALS */
+    .video-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1001; }
+    .video-container { position: relative; width: 80%; max-width: 800px; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 0 25px rgba(86,204,242,0.4); }
+    iframe, video { width: 100%; height: 450px; border: none; outline: none; }
+    .close-btn { position: absolute; top: 10px; right: 15px; color: #fff; font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
+    .close-btn:hover { color: #56ccf2; }
+
+    @media (max-width: 768px) {
+      .tabs { flex-direction: column; gap: 25px; }
+      .tab { width: 80%; }
+      iframe, video { height: 250px; }
+      .corner-logo { display: none; }
+      .sticky-bar { padding: 8px 20px; }
+    }
   </style>
 </head>
+
 <body>
+  <header id="header">
+    <div class="header-top">
+      <img src="images/uom.png" alt="Left Logo" class="corner-logo">
+      <h1>Autonomous Navigation in Dark Unknown Environments using Vision</h1>
+      <img src="images/raico.svg" alt="Right Logo" class="corner-logo">
+    </div>
 
-  <!-- Sticky header -->
-  <div class="sticky-header" id="stickyHeader">
-    <img src="logo_left.png" alt="Logo Left" />
-    <h2>Autonomous Navigation in Dark Unknown Environments using Vision</h2>
-    <img src="logo_right.png" alt="Logo Right" />
-  </div>
-
-  <header id="mainHeader">
-    <img src="logo_left.png" alt="Logo Left" class="logo-left" />
-    <img src="logo_right.png" alt="Logo Right" class="logo-right" />
-    <h1>Autonomous Navigation in Dark Unknown Environments using Vision</h1>
     <p><strong>PhD Student:</strong>
       <a href="mailto:nathan.shankar@postgrad.manchester.ac.uk" class="email-link">Nathan Shankar</a>
     </p>
     <p class="supervisors">
       Supervisors:
-      <a href="mailto:pawel.ladosz@manchester.ac.uk" class="email-link">Pawel Ladosz</a> |
+      <a href="mailto:pawel.ladosz@manchester.ac.uk" class="email-link">Pawel Ladosz</a> &nbsp; | &nbsp;
       <a href="mailto:hujun.yin@manchester.ac.uk" class="email-link">Hujun Yin</a>
     </p>
   </header>
 
-  <!-- Video Tabs -->
-  <div class="tabs">
-    <div class="tab" data-video="https://www.youtube.com/embed/RJ8qQAx-SoI">Research Goals (YouTube)</div>
-    <div class="tab" data-video="nav_in_dark.mp4">Autonomous Exploration Demo</div>
-    <div class="tab" data-video="ir_object_detect.mp4">Infrared Object Detection Demo</div>
+  <!-- Sticky Header -->
+  <div class="sticky-bar" id="stickyBar">
+    <img src="images/uom.png" alt="Left Logo" class="sticky-logo">
+    <div class="sticky-title">Autonomous Navigation in Dark Unknown Environments using Vision</div>
+    <img src="images/raico.svg" alt="Right Logo" class="sticky-logo">
   </div>
 
-  <!-- Gallery -->
-  <div class="gallery" id="gallery"></div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab" id="goals-tab">Research Goals</div>
+    <div class="tab" id="demo-tab">Autonomous Exploration in the Dark Demo</div>
+    <div class="tab" id="ir-tab">Object Detection using Infrared Camera Demo</div>
+    <a href="https://arxiv.org/pdf/2510.04883" target="_blank" class="tab">Research Paper</a>
+  </div>
 
-  <!-- Video Modal -->
-  <div class="modal" id="videoModal">
-    <div class="modal-content">
-      <span class="close" id="closeModal">&times;</span>
-      <iframe id="videoFrame" allowfullscreen></iframe>
+  <!-- Summary -->
+  <section class="summary">
+    <h2>About the Research</h2>
+    <p>
+      Robots struggle when the lights go out, resulting in camera failure, loss of localization, and breakdown of navigation systems.
+      This research aims to give robots the ability to perceive and navigate reliably in complete darkness by combining infrared sensing,
+      intelligent image enhancement, and spatial awareness.
+    </p><br>
+    <p>
+      The goal is to make vision reliable anywhere without relying on a multitude of sensors.
+      By leveraging infrared perception and learning-based enhancement, robots can reconstruct their surroundings,
+      recognize objects, and navigate safely in environments where conventional vision fails.
+      This research has significant implications for autonomous exploration, search and rescue, warehouse fleets,
+      nuclear inspection, and planetary robotics.
+    </p>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery-section">
+    <h2>Research Gallery</h2>
+    <div class="gallery-grid" id="gallery"></div>
+  </section>
+
+  <footer>© 2025 Nathan Shankar — University of Manchester</footer>
+
+  <!-- Image Modal -->
+  <div class="image-modal" id="imageModal">
+    <span class="close-modal" id="closeImageModal">&times;</span>
+    <img id="modalImg" src="" alt="">
+    <div class="image-details">
+      <input type="text" id="userName" placeholder="Your Name">
+      <textarea id="userComment" rows="2" placeholder="Add a comment..."></textarea>
+      <button class="like-btn" id="likeBtn">❤️ Like (<span id="likeCount">0</span>)</button>
+      <div class="comments" id="commentSection"></div>
+    </div>
+  </div>
+
+  <!-- Video Modals -->
+  <div class="video-modal" id="goals-modal">
+    <div class="video-container">
+      <span class="close-btn" data-close="goals-modal">&times;</span>
+      <iframe id="goals-iframe" data-src="https://www.youtube.com/embed/RJ8qQAx-SoI?autoplay=1"></iframe>
+    </div>
+  </div>
+  <div class="video-modal" id="demo-modal">
+    <div class="video-container">
+      <span class="close-btn" data-close="demo-modal">&times;</span>
+      <video id="nav-video" controls><source src="nav_in_dark.mp4" type="video/mp4"></video>
+    </div>
+  </div>
+  <div class="video-modal" id="ir-modal">
+    <div class="video-container">
+      <span class="close-btn" data-close="ir-modal">&times;</span>
+      <video id="ir-video" controls><source src="ir_object_detect.mp4" type="video/mp4"></video>
     </div>
   </div>
 
   <script>
-    // Sticky Header: Show when any part of header is out of view
-    const header = document.getElementById("mainHeader");
-    const stickyHeader = document.getElementById("stickyHeader");
-    window.addEventListener("scroll", () => {
-      const rect = header.getBoundingClientRect();
-      if (rect.bottom <= window.innerHeight && rect.bottom < window.innerHeight - 50) {
-        stickyHeader.classList.add("visible");
-      } else if (rect.top < 0) {
-        stickyHeader.classList.add("visible");
-      } else {
-        stickyHeader.classList.remove("visible");
-      }
-    });
-
-    // Video Modal
-    const modal = document.getElementById("videoModal");
-    const frame = document.getElementById("videoFrame");
-    const closeModal = document.getElementById("closeModal");
-
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.addEventListener("click", () => {
-        const videoSrc = tab.dataset.video;
-        if (videoSrc.endsWith(".mp4")) {
-          frame.outerHTML = `<video id="videoFrame" controls autoplay><source src="${videoSrc}" type="video/mp4"></video>`;
-        } else {
-          frame.outerHTML = `<iframe id="videoFrame" src="${videoSrc}?autoplay=1" allowfullscreen></iframe>`;
-        }
-        modal.style.display = "flex";
+    // Sticky header observer
+    const header = document.getElementById('header');
+    const stickyBar = document.getElementById('stickyBar');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting || entry.intersectionRatio < 1) stickyBar.classList.add('visible');
+        else stickyBar.classList.remove('visible');
       });
+    }, { threshold: Array.from({ length: 100 }, (_, i) => i / 100) });
+    observer.observe(header);
+
+    // Modal video logic
+    const openModal = id => {
+      closeAllVideos();
+      const modal = document.getElementById(id);
+      modal.style.display = 'flex';
+      const iframe = modal.querySelector('iframe');
+      if (iframe) iframe.src = iframe.dataset.src;
+      const video = modal.querySelector('video');
+      if (video) video.play();
+    };
+    const closeModal = id => {
+      const modal = document.getElementById(id);
+      modal.style.display = 'none';
+      const iframe = modal.querySelector('iframe');
+      const video = modal.querySelector('video');
+      if (iframe) iframe.src = '';
+      if (video) { video.pause(); video.currentTime = 0; }
+    };
+    const closeAllVideos = () => document.querySelectorAll('.video-modal').forEach(m => closeModal(m.id));
+    document.getElementById('goals-tab').onclick = () => openModal('goals-modal');
+    document.getElementById('demo-tab').onclick = () => openModal('demo-modal');
+    document.getElementById('ir-tab').onclick = () => openModal('ir-modal');
+    document.querySelectorAll('.close-btn').forEach(btn => btn.addEventListener('click', e => closeModal(e.target.dataset.close)));
+    window.onclick = e => { if (e.target.classList.contains('video-modal')) closeModal(e.target.id); };
+
+    // ==== GALLERY LOGIC ====
+    const gallery = document.getElementById('gallery');
+    const imageModal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    const userName = document.getElementById('userName');
+    const userComment = document.getElementById('userComment');
+    const likeBtn = document.getElementById('likeBtn');
+    const likeCount = document.getElementById('likeCount');
+    const commentSection = document.getElementById('commentSection');
+    const closeImageModal = document.getElementById('closeImageModal');
+
+    const photos = [
+      "uploads/img1.jpg", "uploads/img2.jpg", "uploads/img3.jpg",
+      "uploads/img4.jpg", "uploads/img5.jpg", "uploads/img6.jpg"
+    ]; // add or auto-generate list as needed
+
+    const photoData = {};
+    photos.forEach(src => {
+      const div = document.createElement('div');
+      div.className = 'gallery-item';
+      const img = document.createElement('img');
+      img.src = src;
+      div.appendChild(img);
+      div.onclick = () => openImageModal(src);
+      gallery.appendChild(div);
+      photoData[src] = { likes: 0, comments: [] };
     });
 
-    closeModal.onclick = () => {
-      modal.style.display = "none";
-      document.getElementById("videoFrame").src = "";
-    };
-
-    window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
-
-    // Dynamically load all images from uploads folder
-    async function loadGallery() {
-      try {
-        const res = await fetch('uploads/'); // assumes folder listing enabled
-        const text = await res.text();
-        const regex = /href="([^"]+\.(jpg|jpeg|png|gif|webp))"/gi;
-        const gallery = document.getElementById("gallery");
-        let match;
-        while ((match = regex.exec(text))) {
-          const img = document.createElement("img");
-          img.src = "uploads/" + match[1];
-          gallery.appendChild(img);
+    function openImageModal(src) {
+      modalImg.src = src;
+      imageModal.style.display = 'flex';
+      likeCount.textContent = photoData[src].likes;
+      commentSection.innerHTML = photoData[src].comments.map(c => `<p><strong>${c.name}</strong>: ${c.text}</p>`).join('');
+      likeBtn.onclick = () => {
+        photoData[src].likes++;
+        likeCount.textContent = photoData[src].likes;
+      };
+      userComment.onkeydown = e => {
+        if (e.key === 'Enter' && userComment.value.trim()) {
+          const name = userName.value.trim() || "Anonymous";
+          photoData[src].comments.push({ name, text: userComment.value.trim() });
+          userComment.value = '';
+          commentSection.innerHTML = photoData[src].comments.map(c => `<p><strong>${c.name}</strong>: ${c.text}</p>`).join('');
         }
-      } catch (err) {
-        console.error("Unable to load gallery images automatically:", err);
-      }
+      };
     }
-    loadGallery();
+
+    closeImageModal.onclick = () => imageModal.style.display = 'none';
+    window.addEventListener('click', e => { if (e.target === imageModal) imageModal.style.display = 'none'; });
   </script>
 </body>
 </html>
