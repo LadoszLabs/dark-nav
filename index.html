@@ -32,13 +32,8 @@
       height: auto;
     }
 
-    .logo.left {
-      left: 40px;
-    }
-
-    .logo.right {
-      right: 40px;
-    }
+    .logo.left { left: 40px; }
+    .logo.right { right: 40px; }
 
     header h1 {
       font-size: 2.2rem;
@@ -49,9 +44,7 @@
       margin-bottom: 10px;
     }
 
-    header p {
-      color: #c5c5c5;
-    }
+    header p { color: #c5c5c5; }
 
     .supervisors {
       margin-top: 10px;
@@ -63,9 +56,7 @@
       color: #56ccf2;
       text-decoration: none;
     }
-    a.email-link:hover {
-      text-decoration: underline;
-    }
+    a.email-link:hover { text-decoration: underline; }
 
     .tabs {
       display: flex;
@@ -95,16 +86,14 @@
       cursor: pointer;
     }
 
-    .tab:hover {
-      transform: translateY(-6px) scale(1.05);
-    }
+    .tab:hover { transform: translateY(-6px) scale(1.05); }
 
     .summary {
       max-width: 850px;
       text-align: justify;
       line-height: 1.6;
       color: #d6d6d6;
-      margin: 40px auto 80px;
+      margin: 40px auto 20px;
       background: rgba(255, 255, 255, 0.05);
       padding: 25px 30px;
       border-radius: 15px;
@@ -118,12 +107,13 @@
       margin-bottom: 15px;
     }
 
+    /* Gallery Grid */
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
       max-width: 1000px;
-      margin: 50px auto;
+      margin: 50px auto 80px;
       padding: 0 20px;
     }
 
@@ -136,9 +126,7 @@
       transition: transform 0.3s ease;
     }
 
-    .gallery img:hover {
-      transform: scale(1.05);
-    }
+    .gallery img:hover { transform: scale(1.05); }
 
     /* Sticky Header */
     .sticky-header {
@@ -157,9 +145,7 @@
       transition: transform 0.3s ease;
     }
 
-    .sticky-header.show {
-      transform: translateY(0);
-    }
+    .sticky-header.show { transform: translateY(0); }
 
     .sticky-header img {
       width: 40px;
@@ -167,13 +153,8 @@
       position: absolute;
     }
 
-    .sticky-header .left {
-      left: 20px;
-    }
-
-    .sticky-header .right {
-      right: 20px;
-    }
+    .sticky-header .left { left: 20px; }
+    .sticky-header .right { right: 20px; }
 
     .sticky-header h1 {
       font-size: 1rem;
@@ -183,7 +164,7 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* Modal for videos and images */
+    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -233,11 +214,14 @@
 <body>
   <header id="mainHeader">
     <img src="images/uom.png" class="logo left" alt="Left Logo" />
-    <img src="images/raico.png" class="logo right" alt="Right Logo" />
+    <img src="images/raico.svg" class="logo right" alt="Right Logo" />
     <h1>Autonomous Navigation in Dark Unknown Environments using Vision</h1>
-    <p><strong>PhD Student:</strong> <a href="mailto:nathan.shankar@postgrad.manchester.ac.uk" class="email-link">Nathan Shankar</a></p>
-    <p class="supervisors">Supervisors: 
-      <a href="mailto:pawel.ladosz@manchester.ac.uk" class="email-link">Pawel Ladosz</a> | 
+    <p><strong>PhD Student:</strong>
+      <a href="mailto:nathan.shankar@postgrad.manchester.ac.uk" class="email-link">Nathan Shankar</a>
+    </p>
+    <p class="supervisors">
+      Supervisors: 
+      <a href="mailto:pawel.ladosz@manchester.ac.uk" class="email-link">Pawel Ladosz</a> |
       <a href="mailto:hujun.yin@manchester.ac.uk" class="email-link">Hujun Yin</a>
     </p>
   </header>
@@ -245,7 +229,7 @@
   <div class="sticky-header" id="stickyHeader">
     <img src="images/uom.png" class="left" alt="Logo Left" />
     <h1>Autonomous Navigation in Dark Unknown Environments using Vision</h1>
-    <img src="images/raico.png" class="right" alt="Logo Right" />
+    <img src="images/raico.svg" class="right" alt="Logo Right" />
   </div>
 
   <div class="tabs">
@@ -259,14 +243,15 @@
     <h2>About the Research</h2>
     <p>
       Robots struggle when the lights go out — cameras fail, maps disappear, and navigation breaks down. 
-      This research aims to give robots the ability to see and move reliably in complete darkness by combining 
-      infrared sensing, intelligent image enhancement, and spatial awareness.
+      This research aims to give robots the ability to see and move reliably in complete darkness by 
+      combining infrared sensing, intelligent image enhancement, and spatial awareness.
     </p>
-    <br />
+    <br>
     <p>
       The goal is to make vision reliable anywhere without relying on a multitude of sensors. 
-      By leveraging infrared perception and learning-based enhancement, robots can reconstruct their surroundings, 
-      recognize objects, and navigate safely in environments where traditional vision systems fail.
+      By leveraging infrared perception and learning-based enhancement, robots can reconstruct 
+      their surroundings, recognize objects, and navigate safely in environments where traditional 
+      vision systems fail.
     </p>
   </section>
 
@@ -293,16 +278,17 @@
     const galleryImage = document.getElementById("galleryImage");
     const gallery = document.getElementById("gallery");
 
-    // Sticky header observer (shows when ANY part of header leaves viewport)
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
+    // Sticky header: show when even 1px of title leaves the view
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(entry => {
         if (!entry.isIntersecting) stickyHeader.classList.add("show");
         else stickyHeader.classList.remove("show");
-      });
-    }, { threshold: 1.0 });
+      }),
+      { threshold: 1.0 }
+    );
     observer.observe(header);
 
-    // Modal open logic
+    // Handle video popups
     document.querySelectorAll(".tab").forEach(tab => {
       tab.addEventListener("click", () => {
         const videoSrc = tab.getAttribute("data-video");
@@ -323,25 +309,18 @@
       });
     });
 
-    // Load images automatically from /uploads folder
-    async function loadGallery() {
-      try {
-        const res = await fetch('/uploads/');
-        const text = await res.text();
-        const matches = text.match(/href="([^"]+\.(jpg|jpeg|png|gif))"/gi) || [];
-        const imgs = matches.map(m => m.match(/href="([^"]+)"/i)[1]);
-        imgs.forEach(src => {
-          const img = document.createElement('img');
-          img.src = '/uploads/' + src;
-          img.onclick = () => openImageModal('/uploads/' + src);
+    // Auto-load images from uploads folder
+    const exts = ['jpg', 'jpeg', 'png', 'gif'];
+    for (let i = 1; i <= 20; i++) {
+      for (const ext of exts) {
+        const img = new Image();
+        img.src = `uploads/img${i}.${ext}`;
+        img.onload = () => {
+          img.onclick = () => openImageModal(img.src);
           gallery.appendChild(img);
-        });
-      } catch (e) {
-        console.error("Error loading uploads:", e);
+        };
       }
     }
-
-    loadGallery();
 
     function openImageModal(src) {
       videoModal.style.display = "flex";
