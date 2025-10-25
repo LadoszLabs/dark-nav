@@ -221,11 +221,11 @@
   <section class="summary">
     <h2>About the Research</h2>
     <p>
-      Robots struggle when the lights go out resulting in camera failure, maps not generating or localizing, and navigation breaking down. This research aims to give robots the ability to see and move reliably in complete darkness by combining infrared sensing, intelligent image enhancement, and spatial awareness.
+      Robots struggle when the lights go out, resulting in camera failure, loss of localization, and breakdown of navigation systems. This research aims to give robots the ability to perceive and navigate reliably in complete darkness by combining infrared sensing, intelligent image enhancement, and spatial awareness.
     </p>
     <br>
     <p>
-      The goal is to make vision reliable anywhere without relying on a multitude of sensors. By leveraging infrared perception and learning based enhancement, robots can reconstruct their surroundings, recognize objects, and navigate safely in environments where traditional vision systems fail. This research has significant implications for autonomous exploration, search and rescue operations, warehouse fleets, nuclear and planetary robotics.
+      The goal is to make vision reliable anywhere without relying on a multitude of sensors. By leveraging infrared perception and learning-based enhancement, robots can reconstruct their surroundings, recognize objects, and navigate safely in environments where conventional vision fails. This research has significant implications for autonomous exploration, search and rescue, warehouse fleets, nuclear inspection, and planetary robotics.
     </p>
   </section>
 
@@ -237,7 +237,7 @@
   <div class="video-modal" id="goals-modal">
     <div class="video-container">
       <span class="close-btn" data-close="goals-modal">&times;</span>
-      <iframe src="https://www.youtube.com/embed/RJ8qQAx-SoI?autoplay=1" allow="encrypted-media" allowfullscreen></iframe>
+      <iframe id="goals-iframe" data-src="https://www.youtube.com/embed/RJ8qQAx-SoI?autoplay=1" allow="encrypted-media" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -264,14 +264,35 @@
   </div>
 
   <script>
-    const openModal = id => document.getElementById(id).style.display = 'flex';
+    const openModal = id => {
+      closeAllVideos(); // stop any current playback
+      const modal = document.getElementById(id);
+      modal.style.display = 'flex';
+
+      const iframe = modal.querySelector('iframe');
+      if (iframe) iframe.src = iframe.dataset.src;
+
+      const video = modal.querySelector('video');
+      if (video) video.play();
+    };
+
     const closeModal = id => {
       const modal = document.getElementById(id);
       modal.style.display = 'none';
       const iframe = modal.querySelector('iframe');
       const video = modal.querySelector('video');
-      if (iframe) iframe.src = iframe.src; // stop YouTube video
-      if (video) { video.pause(); video.currentTime = 0; } // stop local video
+      if (iframe) iframe.src = '';
+      if (video) { video.pause(); video.currentTime = 0; }
+    };
+
+    const closeAllVideos = () => {
+      document.querySelectorAll('.video-modal').forEach(m => {
+        const iframe = m.querySelector('iframe');
+        const video = m.querySelector('video');
+        if (iframe) iframe.src = '';
+        if (video) { video.pause(); video.currentTime = 0; }
+        m.style.display = 'none';
+      });
     };
 
     document.getElementById('goals-tab').onclick = () => openModal('goals-modal');
