@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Autonomous Navigation in Dark Unknown Environments using Vision</title>
   <style>
-    /* General Reset */
     * {
       margin: 0;
       padding: 0;
@@ -88,6 +87,7 @@
       padding: 0 25px;
       opacity: 0;
       pointer-events: none;
+      transform: translateY(-100%);
       transition: opacity 0.4s ease, transform 0.4s ease;
       z-index: 100;
     }
@@ -115,7 +115,6 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* Tabs */
     .tabs {
       display: flex;
       justify-content: center;
@@ -211,7 +210,7 @@
       <img src="images/raico.png" alt="Right Logo" id="right-logo">
     </div>
     <div class="header-content">
-      <h1>Autonomous Navigation in Dark Unknown Environments using Vision</h1>
+      <h1 id="main-title">Autonomous Navigation in Dark Unknown Environments using Vision</h1>
       <p><strong>PhD Student:</strong> 
         <a href="mailto:nathanshankar465@gmail.com" style="color:#56ccf2;text-decoration:none;">Nathan Shankar</a>
       </p>
@@ -225,9 +224,9 @@
 
   <!-- Sticky header -->
   <div class="sticky-bar" id="sticky-bar">
-    <img src="left_logo.png" alt="Left Logo" class="sticky-logo">
+    <img src="images/uom.png" alt="Left Logo" class="sticky-logo">
     <div class="sticky-title">Autonomous Navigation in Dark Unknown Environments using Vision</div>
-    <img src="right_logo.png" alt="Right Logo" class="sticky-logo">
+    <img src="images/raico.png" alt="Right Logo" class="sticky-logo">
   </div>
 
   <!-- Tabs -->
@@ -259,17 +258,24 @@
   </footer>
 
   <script>
-    const header = document.getElementById('main-header');
     const stickyBar = document.getElementById('sticky-bar');
+    const title = document.getElementById('main-title');
 
-    window.addEventListener('scroll', () => {
-      const headerRect = header.getBoundingClientRect();
-      if (headerRect.bottom <= 60) {
-        stickyBar.classList.add('visible');
-      } else {
-        stickyBar.classList.remove('visible');
-      }
-    });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          // When the title is not fully visible, show sticky bar
+          if (entry.intersectionRatio < 1) {
+            stickyBar.classList.add('visible');
+          } else {
+            stickyBar.classList.remove('visible');
+          }
+        });
+      },
+      { threshold: [1.0] } // triggers when even a small part goes out of view
+    );
+
+    observer.observe(title);
   </script>
 </body>
 </html>
