@@ -63,8 +63,9 @@
     .corner-logo {
       position: absolute;
       top: -20px;
-      width: 70px;
       height: 70px;
+      width: auto;
+      object-fit: contain;
     }
 
     .left-logo { left: -100px; }
@@ -115,11 +116,6 @@
     }
 
     .tab:hover::before { opacity: 1; }
-
-    .tab:nth-child(1) { border: 1px solid #56ccf2; }
-    .tab:nth-child(2) { border: 1px solid #2f80ed; }
-    .tab:nth-child(3) { border: 1px solid #56ccf2; }
-    .tab:nth-child(4) { border: 1px solid #2f80ed; }
 
     .summary {
       max-width: 850px;
@@ -174,8 +170,9 @@
     }
 
     .sticky-logo {
-      width: 55px;
-      height: auto;
+      height: 55px;
+      width: auto;
+      object-fit: contain;
     }
 
     .sticky-title {
@@ -319,19 +316,19 @@
   </div>
 
   <script>
-    // Sticky header appears when *any* part of header is out of view
+    // Sticky header appears when any part of header is out of view
     const header = document.getElementById('header');
     const stickyBar = document.getElementById('stickyBar');
 
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (!entry.isIntersecting) {
+        if (entry.intersectionRatio < 1) {
           stickyBar.classList.add('visible');
         } else {
           stickyBar.classList.remove('visible');
         }
       });
-    }, { threshold: 1.0 });
+    }, { threshold: [0, 1] });
 
     observer.observe(header);
 
