@@ -15,7 +15,7 @@
     body {
       background: linear-gradient(135deg, #0b0f17, #1c2230);
       color: #f5f5f5;
-      min-height: 200vh;
+      min-height: 100vh;
     }
 
     header {
@@ -39,7 +39,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: all 0.4s ease;
     }
 
     .logos img {
@@ -56,13 +55,11 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 10px;
-      transition: all 0.4s ease;
     }
 
     header p {
       font-size: 1rem;
       color: #c5c5c5;
-      transition: opacity 0.4s ease;
     }
 
     .supervisors {
@@ -172,6 +169,16 @@
       padding: 25px 30px;
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateY(40px);
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .summary h2 {
@@ -185,7 +192,7 @@
       text-align: center;
       font-size: 0.85rem;
       color: #808080;
-      margin-bottom: 25px;
+      margin: 25px 0;
     }
 
     @media (max-width: 768px) {
@@ -206,8 +213,8 @@
 <body>
   <header id="main-header">
     <div class="logos">
-      <img src="images/uom.png" alt="Left Logo" id="left-logo">
-      <img src="images/raico.png" alt="Right Logo" id="right-logo">
+      <img src="left_logo.png" alt="Left Logo" id="left-logo">
+      <img src="right_logo.png" alt="Right Logo" id="right-logo">
     </div>
     <div class="header-content">
       <h1 id="main-title">Autonomous Navigation in Dark Unknown Environments using Vision</h1>
@@ -222,49 +229,47 @@
     </div>
   </header>
 
-  <!-- Sticky header -->
   <div class="sticky-bar" id="sticky-bar">
-    <img src="images/uom.png" alt="Left Logo" class="sticky-logo">
+    <img src="left_logo.png" alt="Left Logo" class="sticky-logo">
     <div class="sticky-title">Autonomous Navigation in Dark Unknown Environments using Vision</div>
-    <img src="images/raico.png" alt="Right Logo" class="sticky-logo">
+    <img src="right_logo.png" alt="Right Logo" class="sticky-logo">
   </div>
 
-  <!-- Tabs -->
   <div class="tabs">
     <a href="https://www.youtube.com/embed/RJ8qQAx-SoI?si=W5WRsp-6FLB4QqU3" target="_blank" class="tab">Research Goals</a>
     <a href="ir_object_detect.mp4" target="_blank" class="tab">Exploration Demo</a>
     <a href="nav_in_dark.mp4" target="_blank" class="tab">Research Paper</a>
   </div>
 
-  <section class="summary">
-    <h2>About the Research</h2>
-    <p>
-      Robots struggle when the lights go out — cameras fail, maps disappear, and navigation breaks down. 
-      This research aims to give robots the ability to see and move reliably in complete darkness by 
-      combining infrared sensing, intelligent image enhancement, and spatial awareness.
-    </p>
-    <br>
-    <p>
-      The goal is to make vision reliable anywhere without relying on a multitude of sensors. 
-      By leveraging infrared perception and learning-based enhancement, robots can reconstruct 
-      their surroundings, recognize objects, and navigate safely in environments where traditional 
-      vision systems fail. This advancement has significant implications for autonomous exploration, 
-      search-and-rescue operations, and planetary robotics.
-    </p>
-  </section>
+  <div id="content-container">
+    <section class="summary">
+      <h2>About the Research</h2>
+      <p>
+        Robots struggle when the lights go out — cameras fail, maps disappear, and navigation breaks down. 
+        This research aims to give robots the ability to see and move reliably in complete darkness by 
+        combining infrared sensing, intelligent image enhancement, and spatial awareness.
+      </p>
+      <br>
+      <p>
+        The goal is to make vision reliable anywhere without relying on a multitude of sensors. 
+        By leveraging infrared perception and learning-based enhancement, robots can reconstruct 
+        their surroundings, recognize objects, and navigate safely in environments where traditional 
+        vision systems fail. This advancement has significant implications for autonomous exploration, 
+        search-and-rescue operations, and planetary robotics.
+      </p>
+    </section>
+  </div>
 
-  <footer>
-    © 2025 Nathan Shankar — University of Manchester
-  </footer>
+  <footer>© 2025 Nathan Shankar — University of Manchester</footer>
 
   <script>
+    // Sticky Header logic
     const stickyBar = document.getElementById('sticky-bar');
     const title = document.getElementById('main-title');
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
-          // When the title is not fully visible, show sticky bar
           if (entry.intersectionRatio < 1) {
             stickyBar.classList.add('visible');
           } else {
@@ -272,10 +277,37 @@
           }
         });
       },
-      { threshold: [1.0] } // triggers when even a small part goes out of view
+      { threshold: [1.0] }
     );
-
     observer.observe(title);
+
+    // Infinite scroll logic
+    const contentContainer = document.getElementById('content-container');
+
+    window.addEventListener('scroll', () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+        addNewSection();
+      }
+    });
+
+    function addNewSection() {
+      const section = document.createElement('section');
+      section.className = 'summary';
+      section.innerHTML = `
+        <h2>Continuing Research</h2>
+        <p>
+          Ongoing experiments expand on visual understanding in low-light scenes by integrating
+          temporal and infrared data fusion. The system learns adaptive feature extraction strategies
+          for robust navigation in visually degraded environments.
+        </p>
+        <br>
+        <p>
+          Each iteration builds toward complete autonomy in perception-driven exploration.
+          The framework generalizes to unseen domains and dynamic lighting, enabling
+          long-duration missions with minimal supervision.
+        </p>`;
+      contentContainer.appendChild(section);
+    }
   </script>
 </body>
 </html>
