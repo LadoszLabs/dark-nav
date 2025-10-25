@@ -172,91 +172,134 @@
     </p>
   </section>
 
-  <section class="gallery-section">
-    <h2>Research Gallery</h2>
-    <div class="gallery-grid" id="gallery"></div>
-  </section>
+<section class="gallery-section">
+  <h2>Research Gallery</h2>
+  <div class="gallery-grid" id="gallery"></div>
+</section>
 
-  <footer>© 2025 Nathan Shankar — University of Manchester</footer>
+<footer>© 2025 Nathan Shankar — University of Manchester</footer>
 
-  <!-- IMAGE MODAL -->
-  <div class="image-modal" id="imageModal">
-    <span class="close-modal" id="closeImageModal">&times;</span>
-    <img id="modalImg" src="" alt="">
-    <div class="image-details">
-      <input type="text" id="userName" placeholder="Your Name">
-      <textarea id="userComment" rows="2" placeholder="Add a comment..."></textarea>
-      <button class="like-btn" id="likeBtn">❤️ Like (<span id="likeCount">0</span>)</button>
-      <div class="comments" id="commentSection"></div>
-    </div>
+<!-- IMAGE MODAL -->
+<div class="image-modal" id="imageModal">
+  <span class="close-modal" id="closeImageModal">&times;</span>
+  <img id="modalImg" src="" alt="">
+  <div class="image-details">
+    <input type="text" id="userName" placeholder="Your Name">
+    <textarea id="userComment" rows="2" placeholder="Add a comment..."></textarea>
+    <button class="like-btn" id="likeBtn">❤️ Like (<span id="likeCount">0</span>)</button>
+    <div class="comments" id="commentSection"></div>
   </div>
+</div>
 
-  <script>
-    // Sticky header observer
-    const header = document.getElementById('header');
-    const stickyBar = document.getElementById('stickyBar');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting || entry.intersectionRatio < 1) stickyBar.classList.add('visible');
-        else stickyBar.classList.remove('visible');
+<!-- VIDEO MODALS -->
+<div class="video-modal" id="goals-modal">
+  <div class="video-container">
+    <span class="close-btn" data-close="goals-modal">&times;</span>
+    <iframe id="goals-iframe" data-src="https://www.youtube.com/embed/RJ8qQAx-SoI?autoplay=1"></iframe>
+  </div>
+</div>
+<div class="video-modal" id="demo-modal">
+  <div class="video-container">
+    <span class="close-btn" data-close="demo-modal">&times;</span>
+    <video id="nav-video" controls><source src="nav_in_dark.mp4" type="video/mp4"></video>
+  </div>
+</div>
+<div class="video-modal" id="ir-modal">
+  <div class="video-container">
+    <span class="close-btn" data-close="ir-modal">&times;</span>
+    <video id="ir-video" controls><source src="ir_object_detect.mp4" type="video/mp4"></video>
+  </div>
+</div>
+
+<script>
+  // Sticky header observer
+  const header = document.getElementById('header');
+  const stickyBar = document.getElementById('stickyBar');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting || entry.intersectionRatio < 1) stickyBar.classList.add('visible');
+      else stickyBar.classList.remove('visible');
+    });
+  }, { threshold: Array.from({ length: 100 }, (_, i) => i / 100) });
+  observer.observe(header);
+
+  // Video modal logic
+  const openModal = id => {
+    closeAllVideos();
+    const modal = document.getElementById(id);
+    modal.style.display = 'flex';
+    const iframe = modal.querySelector('iframe');
+    if (iframe) iframe.src = iframe.dataset.src;
+    const video = modal.querySelector('video');
+    if (video) video.play();
+  };
+  const closeModal = id => {
+    const modal = document.getElementById(id);
+    modal.style.display = 'none';
+    const iframe = modal.querySelector('iframe');
+    const video = modal.querySelector('video');
+    if (iframe) iframe.src = '';
+    if (video) { video.pause(); video.currentTime = 0; }
+  };
+  const closeAllVideos = () => document.querySelectorAll('.video-modal').forEach(m => closeModal(m.id));
+  document.getElementById('goals-tab').onclick = () => openModal('goals-modal');
+  document.getElementById('demo-tab').onclick = () => openModal('demo-modal');
+  document.getElementById('ir-tab').onclick = () => openModal('ir-modal');
+  document.querySelectorAll('.close-btn').forEach(btn => btn.addEventListener('click', e => closeModal(e.target.dataset.close)));
+  window.onclick = e => { if (e.target.classList.contains('video-modal')) closeModal(e.target.id); };
+
+  // ==== GALLERY LOGIC ====
+  const gallery = document.getElementById('gallery');
+  const imageModal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('modalImg');
+  const userName = document.getElementById('userName');
+  const userComment = document.getElementById('userComment');
+  const likeBtn = document.getElementById('likeBtn');
+  const likeCount = document.getElementById('likeCount');
+  const commentSection = document.getElementById('commentSection');
+  const closeImageModal = document.getElementById('closeImageModal');
+
+  const photoData = {};
+
+  // Fetch images automatically
+  fetch('uploads/index.json')
+    .then(res => res.json())
+    .then(photos => {
+      photos.forEach(src => {
+        const div = document.createElement('div');
+        div.className = 'gallery-item';
+        const img = document.createElement('img');
+        img.src = src;
+        div.appendChild(img);
+        div.onclick = () => openImageModal(src);
+        gallery.appendChild(div);
+        photoData[src] = { likes: 0, comments: [] };
       });
-    }, { threshold: Array.from({ length: 100 }, (_, i) => i / 100) });
-    observer.observe(header);
+    })
+    .catch(err => {
+      console.error("Could not load image list:", err);
+      gallery.innerHTML = "<p style='color:#999;'>No images found in uploads folder.</p>";
+    });
 
-    // ==== GALLERY LOGIC ====
-    const gallery = document.getElementById('gallery');
-    const imageModal = document.getElementById('imageModal');
-    const modalImg = document.getElementById('modalImg');
-    const userName = document.getElementById('userName');
-    const userComment = document.getElementById('userComment');
-    const likeBtn = document.getElementById('likeBtn');
-    const likeCount = document.getElementById('likeCount');
-    const commentSection = document.getElementById('commentSection');
-    const closeImageModal = document.getElementById('closeImageModal');
-
-    const photoData = {};
-
-    // Fetch image list automatically
-    fetch('uploads/index.json')
-      .then(res => res.json())
-      .then(photos => {
-        photos.forEach(src => {
-          const div = document.createElement('div');
-          div.className = 'gallery-item';
-          const img = document.createElement('img');
-          img.src = src;
-          div.appendChild(img);
-          div.onclick = () => openImageModal(src);
-          gallery.appendChild(div);
-          photoData[src] = { likes: 0, comments: [] };
-        });
-      })
-      .catch(err => {
-        console.error("Could not load image list:", err);
-        gallery.innerHTML = "<p style='color:#999;'>No images found in uploads folder.</p>";
-      });
-
-    function openImageModal(src) {
-      modalImg.src = src;
-      imageModal.style.display = 'flex';
+  function openImageModal(src) {
+    modalImg.src = src;
+    imageModal.style.display = 'flex';
+    likeCount.textContent = photoData[src].likes;
+    commentSection.innerHTML = photoData[src].comments.map(c => `<p><strong>${c.name}</strong>: ${c.text}</p>`).join('');
+    likeBtn.onclick = () => {
+      photoData[src].likes++;
       likeCount.textContent = photoData[src].likes;
-      commentSection.innerHTML = photoData[src].comments.map(c => `<p><strong>${c.name}</strong>: ${c.text}</p>`).join('');
-      likeBtn.onclick = () => {
-        photoData[src].likes++;
-        likeCount.textContent = photoData[src].likes;
-      };
-      userComment.onkeydown = e => {
-        if (e.key === 'Enter' && userComment.value.trim()) {
-          const name = userName.value.trim() || "Anonymous";
-          photoData[src].comments.push({ name, text: userComment.value.trim() });
-          userComment.value = '';
-          commentSection.innerHTML = photoData[src].comments.map(c => `<p><strong>${c.name}</strong>: ${c.text}</p>`).join('');
-        }
-      };
-    }
+    };
+    userComment.onkeydown = e => {
+      if (e.key === 'Enter' && userComment.value.trim()) {
+        const name = userName.value.trim() || "Anonymous";
+        photoData[src].comments.push({ name, text: userComment.value.trim() });
+        userComment.value = '';
+        commentSection.innerHTML = photoData[src].comments.map(c => `<p><strong>${c.name}</strong>: ${c.text}</p>`).join('');
+      }
+    };
+  }
 
-    closeImageModal.onclick = () => imageModal.style.display = 'none';
-    window.addEventListener('click', e => { if (e.target === imageModal) imageModal.style.display = 'none'; });
-  </script>
-</body>
-</html>
+  closeImageModal.onclick = () => imageModal.style.display = 'none';
+  window.addEventListener('click', e => { if (e.target === imageModal) imageModal.style.display = 'none'; });
+</script>
