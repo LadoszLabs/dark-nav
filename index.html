@@ -9,32 +9,36 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
+      font-family: "Poppins", sans-serif;
     }
 
     body {
       background: linear-gradient(135deg, #0b0f17, #1c2230);
       color: #f5f5f5;
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
     header {
-      position: relative;
       text-align: center;
-      padding: 40px 20px 20px;
-      background: transparent;
-      transition: all 0.4s ease;
+      padding: 60px 20px 20px;
+      position: relative;
     }
 
-    header img {
+    header img.logo {
       position: absolute;
-      top: 25px;
+      top: 20px;
       width: 80px;
-      transition: all 0.4s ease;
+      height: auto;
     }
 
-    .logo-left { left: 30px; }
-    .logo-right { right: 30px; }
+    .logo.left {
+      left: 40px;
+    }
+
+    .logo.right {
+      right: 40px;
+    }
 
     header h1 {
       font-size: 2.2rem;
@@ -43,6 +47,10 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 10px;
+    }
+
+    header p {
+      color: #c5c5c5;
     }
 
     .supervisors {
@@ -55,84 +63,67 @@
       color: #56ccf2;
       text-decoration: none;
     }
-
     a.email-link:hover {
-      color: #2f80ed;
       text-decoration: underline;
     }
 
-    /* Sticky Header */
-    .sticky-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 65px;
-      background: rgba(20, 25, 35, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      transform: translateY(-100%);
-      transition: transform 0.3s ease;
-      box-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .sticky-header.visible {
-      transform: translateY(0);
-    }
-
-    .sticky-header img {
-      width: 45px;
-      margin: 0 20px;
-    }
-
-    .sticky-header h2 {
-      font-size: 1.2rem;
-      background: linear-gradient(to right, #56ccf2, #2f80ed);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* Tabs */
     .tabs {
       display: flex;
       justify-content: center;
+      align-items: center;
+      gap: 40px;
       flex-wrap: wrap;
-      gap: 30px;
-      margin: 60px 20px;
+      margin: 70px 20px;
     }
 
     .tab {
       background: #1e2738;
       border-radius: 15px;
       width: 260px;
-      height: 150px;
+      height: 160px;
       text-align: center;
       display: flex;
       justify-content: center;
       align-items: center;
       color: #ffffff;
+      text-decoration: none;
       font-size: 1.1rem;
       font-weight: 500;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
       transition: all 0.3s ease;
-      cursor: pointer;
       position: relative;
+      cursor: pointer;
     }
 
     .tab:hover {
       transform: translateY(-6px) scale(1.05);
-      box-shadow: 0 0 25px rgba(86, 204, 242, 0.7);
     }
 
-    /* Gallery */
+    .summary {
+      max-width: 850px;
+      text-align: justify;
+      line-height: 1.6;
+      color: #d6d6d6;
+      margin: 40px auto 80px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 25px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .summary h2 {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #56ccf2;
+      margin-bottom: 15px;
+    }
+
     .gallery {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
       max-width: 1000px;
-      margin: 40px auto;
+      margin: 50px auto;
       padding: 0 20px;
     }
 
@@ -142,23 +133,68 @@
       object-fit: cover;
       border-radius: 10px;
       cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s ease;
     }
 
     .gallery img:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(86, 204, 242, 0.6);
     }
 
-    /* Modals */
+    /* Sticky Header */
+    .sticky-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(12, 18, 28, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+    }
+
+    .sticky-header.show {
+      transform: translateY(0);
+    }
+
+    .sticky-header img {
+      width: 40px;
+      height: auto;
+      position: absolute;
+    }
+
+    .sticky-header .left {
+      left: 20px;
+    }
+
+    .sticky-header .right {
+      right: 20px;
+    }
+
+    .sticky-header h1 {
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(to right, #56ccf2, #2f80ed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Modal for videos and images */
     .modal {
       display: none;
       position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 999;
-      align-items: center;
+      z-index: 9999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
       justify-content: center;
+      align-items: center;
     }
 
     .modal-content {
@@ -169,133 +205,165 @@
       overflow: hidden;
     }
 
-    .modal-content video,
-    .modal-content iframe {
+    .modal video,
+    .modal iframe,
+    .modal img {
       width: 100%;
-      height: 500px;
-      border: none;
+      height: auto;
       display: block;
     }
 
     .close {
       position: absolute;
       top: 10px;
-      right: 20px;
-      font-size: 2rem;
-      color: #fff;
+      right: 15px;
+      color: white;
+      font-size: 1.8rem;
       cursor: pointer;
     }
 
-    @media (max-width: 900px) {
-      .gallery { grid-template-columns: repeat(2, 1fr); }
-      .gallery img { height: 180px; }
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #808080;
+      margin: 30px 0;
     }
-
-    @media (max-width: 600px) {
-      .gallery { grid-template-columns: 1fr; }
-      .gallery img { height: 160px; }
-    }
-
   </style>
 </head>
 <body>
-
-  <!-- Sticky header -->
-  <div class="sticky-header" id="stickyHeader">
-    <img src="logo_left.png" alt="Logo Left" />
-    <h2>Autonomous Navigation in Dark Unknown Environments using Vision</h2>
-    <img src="logo_right.png" alt="Logo Right" />
-  </div>
-
   <header id="mainHeader">
-    <img src="logo_left.png" alt="Logo Left" class="logo-left" />
-    <img src="logo_right.png" alt="Logo Right" class="logo-right" />
+    <img src="images/uom.png" class="logo left" alt="Left Logo" />
+    <img src="images/raico.png" class="logo right" alt="Right Logo" />
     <h1>Autonomous Navigation in Dark Unknown Environments using Vision</h1>
-    <p><strong>PhD Student:</strong>
-      <a href="mailto:nathan.shankar@postgrad.manchester.ac.uk" class="email-link">Nathan Shankar</a>
-    </p>
-    <p class="supervisors">
-      Supervisors:
-      <a href="mailto:pawel.ladosz@manchester.ac.uk" class="email-link">Pawel Ladosz</a> |
+    <p><strong>PhD Student:</strong> <a href="mailto:nathan.shankar@postgrad.manchester.ac.uk" class="email-link">Nathan Shankar</a></p>
+    <p class="supervisors">Supervisors: 
+      <a href="mailto:pawel.ladosz@manchester.ac.uk" class="email-link">Pawel Ladosz</a> | 
       <a href="mailto:hujun.yin@manchester.ac.uk" class="email-link">Hujun Yin</a>
     </p>
   </header>
 
-  <!-- Video Tabs -->
-  <div class="tabs">
-    <div class="tab" data-video="https://www.youtube.com/embed/RJ8qQAx-SoI">Research Goals (YouTube)</div>
-    <div class="tab" data-video="nav_in_dark.mp4">Autonomous Exploration Demo</div>
-    <div class="tab" data-video="ir_object_detect.mp4">Infrared Object Detection Demo</div>
+  <div class="sticky-header" id="stickyHeader">
+    <img src="images/uom.png" class="left" alt="Logo Left" />
+    <h1>Autonomous Navigation in Dark Unknown Environments using Vision</h1>
+    <img src="images/raico.png" class="right" alt="Logo Right" />
   </div>
 
-  <!-- Gallery -->
-  <div class="gallery" id="gallery"></div>
+  <div class="tabs">
+    <div class="tab" data-video="https://www.youtube.com/embed/RJ8qQAx-SoI">Research Goals</div>
+    <div class="tab" data-video="videos/nav_in_dark.mp4">Autonomous Exploration Demo</div>
+    <div class="tab" data-video="videos/ir_object_detect.mp4">Object Detection (IR)</div>
+    <a href="https://arxiv.org/pdf/2510.04883" target="_blank" class="tab">Research Paper</a>
+  </div>
 
-  <!-- Video Modal -->
+  <section class="summary">
+    <h2>About the Research</h2>
+    <p>
+      Robots struggle when the lights go out — cameras fail, maps disappear, and navigation breaks down. 
+      This research aims to give robots the ability to see and move reliably in complete darkness by combining 
+      infrared sensing, intelligent image enhancement, and spatial awareness.
+    </p>
+    <br />
+    <p>
+      The goal is to make vision reliable anywhere without relying on a multitude of sensors. 
+      By leveraging infrared perception and learning-based enhancement, robots can reconstruct their surroundings, 
+      recognize objects, and navigate safely in environments where traditional vision systems fail.
+    </p>
+  </section>
+
+  <section class="gallery" id="gallery"></section>
+
   <div class="modal" id="videoModal">
     <div class="modal-content">
       <span class="close" id="closeModal">&times;</span>
-      <iframe id="videoFrame" allowfullscreen></iframe>
+      <iframe id="ytPlayer" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <video id="localVideo" controls></video>
+      <img id="galleryImage" alt="Gallery Image" />
     </div>
   </div>
 
+  <footer>© 2025 Nathan Shankar — University of Manchester</footer>
+
   <script>
-    // Sticky Header: Show when any part of header is out of view
     const header = document.getElementById("mainHeader");
     const stickyHeader = document.getElementById("stickyHeader");
-    window.addEventListener("scroll", () => {
-      const rect = header.getBoundingClientRect();
-      if (rect.bottom <= window.innerHeight && rect.bottom < window.innerHeight - 50) {
-        stickyHeader.classList.add("visible");
-      } else if (rect.top < 0) {
-        stickyHeader.classList.add("visible");
-      } else {
-        stickyHeader.classList.remove("visible");
-      }
-    });
-
-    // Video Modal
-    const modal = document.getElementById("videoModal");
-    const frame = document.getElementById("videoFrame");
+    const videoModal = document.getElementById("videoModal");
     const closeModal = document.getElementById("closeModal");
+    const ytPlayer = document.getElementById("ytPlayer");
+    const localVideo = document.getElementById("localVideo");
+    const galleryImage = document.getElementById("galleryImage");
+    const gallery = document.getElementById("gallery");
 
+    // Sticky header observer (shows when ANY part of header leaves viewport)
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) stickyHeader.classList.add("show");
+        else stickyHeader.classList.remove("show");
+      });
+    }, { threshold: 1.0 });
+    observer.observe(header);
+
+    // Modal open logic
     document.querySelectorAll(".tab").forEach(tab => {
       tab.addEventListener("click", () => {
-        const videoSrc = tab.dataset.video;
-        if (videoSrc.endsWith(".mp4")) {
-          frame.outerHTML = `<video id="videoFrame" controls autoplay><source src="${videoSrc}" type="video/mp4"></video>`;
-        } else {
-          frame.outerHTML = `<iframe id="videoFrame" src="${videoSrc}?autoplay=1" allowfullscreen></iframe>`;
+        const videoSrc = tab.getAttribute("data-video");
+        if (videoSrc) {
+          videoModal.style.display = "flex";
+          if (videoSrc.includes("youtube.com")) {
+            ytPlayer.src = videoSrc + "?autoplay=1";
+            ytPlayer.style.display = "block";
+            localVideo.style.display = "none";
+            galleryImage.style.display = "none";
+          } else if (videoSrc.endsWith(".mp4")) {
+            localVideo.src = videoSrc;
+            localVideo.style.display = "block";
+            ytPlayer.style.display = "none";
+            galleryImage.style.display = "none";
+          }
         }
-        modal.style.display = "flex";
       });
     });
 
-    closeModal.onclick = () => {
-      modal.style.display = "none";
-      document.getElementById("videoFrame").src = "";
-    };
-
-    window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
-
-    // Dynamically load all images from uploads folder
+    // Load images automatically from /uploads folder
     async function loadGallery() {
       try {
-        const res = await fetch('uploads/'); // assumes folder listing enabled
+        const res = await fetch('/uploads/');
         const text = await res.text();
-        const regex = /href="([^"]+\.(jpg|jpeg|png|gif|webp))"/gi;
-        const gallery = document.getElementById("gallery");
-        let match;
-        while ((match = regex.exec(text))) {
-          const img = document.createElement("img");
-          img.src = "uploads/" + match[1];
+        const matches = text.match(/href="([^"]+\.(jpg|jpeg|png|gif))"/gi) || [];
+        const imgs = matches.map(m => m.match(/href="([^"]+)"/i)[1]);
+        imgs.forEach(src => {
+          const img = document.createElement('img');
+          img.src = '/uploads/' + src;
+          img.onclick = () => openImageModal('/uploads/' + src);
           gallery.appendChild(img);
-        }
-      } catch (err) {
-        console.error("Unable to load gallery images automatically:", err);
+        });
+      } catch (e) {
+        console.error("Error loading uploads:", e);
       }
     }
+
     loadGallery();
+
+    function openImageModal(src) {
+      videoModal.style.display = "flex";
+      galleryImage.src = src;
+      galleryImage.style.display = "block";
+      ytPlayer.style.display = "none";
+      localVideo.style.display = "none";
+    }
+
+    closeModal.onclick = () => {
+      videoModal.style.display = "none";
+      ytPlayer.src = "";
+      localVideo.pause();
+    };
+
+    window.onclick = e => {
+      if (e.target === videoModal) {
+        videoModal.style.display = "none";
+        ytPlayer.src = "";
+        localVideo.pause();
+      }
+    };
   </script>
 </body>
 </html>
