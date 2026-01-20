@@ -34,7 +34,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      min-height: 65px; /* allow flexible height for wrapped titles */
+      min-height: 65px;
       background: rgba(15, 20, 30, 0.9);
       backdrop-filter: blur(8px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -47,7 +47,7 @@
       transform: translateY(-100%);
       transition: opacity 0.4s ease, transform 0.4s ease;
       z-index: 100;
-      flex-wrap: wrap; /* ✅ allow content wrapping */
+      flex-wrap: wrap;
     }
     
     .sticky-bar.visible {
@@ -56,10 +56,7 @@
       transform: translateY(0);
     }
     
-    .sticky-logo {
-      height: 40px; /* ✅ slightly smaller for mobile */
-      object-fit: contain;
-    }
+    .sticky-logo { height: 40px; object-fit: contain; }
     
     .sticky-title {
       flex: 1;
@@ -69,9 +66,9 @@
       background: linear-gradient(to right, #56ccf2, #2f80ed);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin: 5px 10px; /* ✅ give breathing space */
+      margin: 5px 10px;
       line-height: 1.3;
-      word-wrap: break-word; /* ✅ prevent overflow */
+      word-wrap: break-word;
       overflow-wrap: break-word;
     }
 
@@ -136,97 +133,36 @@
     .close-btn { position: absolute; top: 10px; right: 15px; color: #fff; font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
     .close-btn:hover { color: #56ccf2; }
 
-    /* --- MOBILE OPTIMIZATION --- */
-    @media (max-width: 768px) {
-      .pipeline-wrapper {
-        /* 1. Define a safe height for the animation area */
-        height: 160px; 
-        overflow: hidden; 
-        
-        /* 2. Use Flexbox to force the grid to the center of the screen */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      
-      .pipeline-grid {
-        /* 3. Force Desktop Width: Keep internal math (1000px) intact */
-        width: 1000px;
-        max-width: none;
-        
-        /* 4. SHRINK IT: Scale down to ~35% so 1000px fits into ~350px screens */
-        transform: scale(0.35);
-        
-        /* 5. Anchor the shrink to the center */
-        transform-origin: center center;
-        
-        /* 6. Ensure no offsets or positioning interfere */
-        margin: 0;
-        position: relative; /* Keep it in flow, not absolute */
-        left: auto;
-        top: auto;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .gallery-grid { grid-template-columns: 1fr; }
-    }
-
     /* ================= SYNCED PIPELINE ANIMATION ================= */
     .pipeline-section {
-      width: 100%;
-      max-width: 1200px;
-      margin: 50px auto;
-      text-align: center;
-      overflow: hidden;
-      padding: 40px 0;
+      width: 100%; max-width: 1200px; margin: 50px auto;
+      text-align: center; overflow: hidden; padding: 40px 0;
     }
-    .pipeline-section h2 {
-      font-size: 1.8rem;
-      color: #56ccf2;
-      margin-bottom: 40px;
-    }
+    .pipeline-section h2 { font-size: 1.8rem; color: #56ccf2; margin-bottom: 40px; }
 
-    /* THE WRAPPER: Now acts as a Flex container to center content perfectly */
     .pipeline-wrapper {
-      position: relative;
-      width: 100%;
-      height: 240px;
+      position: relative; width: 100%; height: 240px;
       background: rgba(255, 255, 255, 0.02);
       border-y: 1px solid rgba(86, 204, 242, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden; /* Ensures the scaled content never spills out */
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
     }
 
-    /* --- THE GRID SYSTEM --- */
     .pipeline-grid {
-      display: grid;
-      grid-template-columns: repeat(9, 1fr); 
-      align-items: center;
-      justify-items: center;
-      width: 1000px; /* Fixed width helps maintain animation consistency */
-      max-width: 95%; /* Responsive on Desktop */
-      position: relative;
+      display: grid; grid-template-columns: repeat(9, 1fr); 
+      align-items: center; justify-items: center;
+      width: 1000px; max-width: 95%; position: relative;
     }
 
-    /* --- 1. INPUT / OUTPUT --- */
     .io-stage {
-      position: relative;
-      width: 60px; height: 60px;
+      position: relative; width: 60px; height: 60px;
       display: flex; justify-content: center; align-items: center;
     }
     .io-img {
-      width: 100%; height: 100%;
-      border-radius: 6px;
-      border: 2px solid #56ccf2;
-      object-fit: cover;
-      background: #000;
+      width: 100%; height: 100%; border-radius: 6px;
+      border: 2px solid #56ccf2; object-fit: cover; background: #000;
       box-shadow: 0 0 10px rgba(86, 204, 242, 0.3);
     }
 
-    /* Input shrinks at start (0-5%) */
     .input-anim { animation: shrinkInput 20s linear infinite; }
     @keyframes shrinkInput {
       0% { transform: scale(1); opacity: 1; }
@@ -235,7 +171,6 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* Output expands at end (85-90%) */
     .output-anim { animation: expandOutput 20s linear infinite; transform: scale(0); }
     @keyframes expandOutput {
       0%, 85% { transform: scale(0); opacity: 0; }
@@ -243,113 +178,43 @@
       95%, 100% { transform: scale(1); opacity: 1; }
     }
 
-    /* --- 2. THE DOT --- */
     .traveling-dot {
-      position: absolute;
-      top: 50%;
-      left: 0; 
-      width: 14px; height: 14px;
-      background: #56ccf2;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 15px #56ccf2;
-      z-index: 50;
-      pointer-events: none;
-      animation: dotMove 20s linear infinite;
+      position: absolute; top: 50%; left: 0; 
+      width: 14px; height: 14px; background: #56ccf2;
+      border-radius: 50%; transform: translate(-50%, -50%);
+      box-shadow: 0 0 15px #56ccf2; z-index: 50;
+      pointer-events: none; animation: dotMove 20s linear infinite;
     }
 
     @keyframes dotMove {
-      /* Step 0: At Input */
-      0%   { left: 0%; opacity: 0; }
-      2%   { opacity: 1; } 
-      5%   { left: 0%; opacity: 1; } 
-      
-      /* Move to Enc1 (12.5%) */
-      9%   { left: 12.5%; opacity: 1; }
-      10%  { opacity: 0; } 
-      15%  { opacity: 0; } 
-      16%  { opacity: 1; } 
-
-      /* Move to Enc2 (25%) */
-      19%  { left: 25%; opacity: 1; }
-      20%  { opacity: 0; }
-      25%  { opacity: 0; }
-      26%  { opacity: 1; }
-
-      /* Move to Enc3 (37.5%) */
-      29%  { left: 37.5%; opacity: 1; }
-      30%  { opacity: 0; }
-      35%  { opacity: 0; }
-      36%  { opacity: 1; }
-
-      /* Move to Bottleneck (50%) */
-      39%  { left: 50%; opacity: 1; }
-      40%  { opacity: 0; }
-      45%  { opacity: 0; }
-      46%  { opacity: 1; }
-
-      /* Move to Dec3 (62.5%) */
-      49%  { left: 62.5%; opacity: 1; }
-      50%  { opacity: 0; }
-      55%  { opacity: 0; }
-      56%  { opacity: 1; }
-
-      /* Move to Dec2 (75%) */
-      59%  { left: 75%; opacity: 1; }
-      60%  { opacity: 0; }
-      65%  { opacity: 0; }
-      66%  { opacity: 1; }
-
-      /* Move to Dec1 (87.5%) */
-      69%  { left: 87.5%; opacity: 1; }
-      70%  { opacity: 0; }
-      75%  { opacity: 0; }
-      76%  { opacity: 1; }
-
-      /* Move to Output (100%) */
-      84%  { left: 100%; opacity: 1; }
-      85%  { opacity: 0; } 
-      100% { left: 100%; opacity: 0; }
+      0%   { left: 0%; opacity: 0; } 2% { opacity: 1; } 5% { left: 0%; opacity: 1; }
+      9%   { left: 12.5%; opacity: 1; } 10%, 15% { opacity: 0; } 16% { opacity: 1; }
+      19%  { left: 25%; opacity: 1; } 20%, 25% { opacity: 0; } 26% { opacity: 1; }
+      29%  { left: 37.5%; opacity: 1; } 30%, 35% { opacity: 0; } 36% { opacity: 1; }
+      39%  { left: 50%; opacity: 1; } 40%, 45% { opacity: 0; } 46% { opacity: 1; }
+      49%  { left: 62.5%; opacity: 1; } 50%, 55% { opacity: 0; } 56% { opacity: 1; }
+      59%  { left: 75%; opacity: 1; } 60%, 65% { opacity: 0; } 66% { opacity: 1; }
+      69%  { left: 87.5%; opacity: 1; } 70%, 75% { opacity: 0; } 76% { opacity: 1; }
+      84%  { left: 100%; opacity: 1; } 85% { opacity: 0; } 100% { left: 100%; opacity: 0; }
     }
 
-    /* --- 3. LAYERS --- */
     .layer-box {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-      overflow: visible; 
+      position: relative; display: flex; justify-content: center;
+      align-items: center; width: 100%; height: 100%; overflow: visible; 
     }
 
     .layer-shape {
-      background: #1e2738;
-      border: 1px solid #2f80ed;
-      border-radius: 4px;
-      position: relative;
-      z-index: 10;
-      transition: border-color 0.2s;
-      animation: zIndexBump 20s linear infinite;
+      background: #1e2738; border: 1px solid #2f80ed;
+      border-radius: 4px; position: relative; z-index: 10;
+      transition: border-color 0.2s; animation: zIndexBump 20s linear infinite;
       animation-delay: var(--delay);
     }
-
     .layer-shape::after {
-      content: "";
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100%; height: 100%;
-      
-      background-image: var(--img);
-      background-size: cover;
-      background-position: center;
-      border: 2px solid #56ccf2;
-      box-shadow: 0 0 25px rgba(0,0,0,0.9);
-      
-      opacity: 0;
-      pointer-events: none;
-      animation: popImage 20s linear infinite;
+      content: ""; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%); width: 100%; height: 100%;
+      background-image: var(--img); background-size: cover; background-position: center;
+      border: 2px solid #56ccf2; box-shadow: 0 0 25px rgba(0,0,0,0.9);
+      opacity: 0; pointer-events: none; animation: popImage 20s linear infinite;
       animation-delay: var(--delay);
     }
 
@@ -359,7 +224,6 @@
       5% { z-index: 10; border-color: #2f80ed; } 
       100% { z-index: 10; }
     }
-
     @keyframes popImage {
       0% { opacity: 0; width: 100%; height: 100%; }
       0.1% { opacity: 1; background-color: #000; }
@@ -372,49 +236,91 @@
     .s-64  { width: 25px; height: 70px; }
     .s-128 { width: 30px; height: 50px; }
     .s-256 { width: 40px; height: 40px; border-color: #fff; }
-
-    .d-1 { --delay: 2s; }
-    .d-2 { --delay: 4s; }
-    .d-3 { --delay: 6s; }
-    .d-4 { --delay: 8s; }
-    .d-5 { --delay: 10s; }
-    .d-6 { --delay: 12s; }
-    .d-7 { --delay: 14s; }
+    .d-1 { --delay: 2s; } .d-2 { --delay: 4s; } .d-3 { --delay: 6s; }
+    .d-4 { --delay: 8s; } .d-5 { --delay: 10s; } .d-6 { --delay: 12s; } .d-7 { --delay: 14s; }
 
     .connector-line {
-      position: absolute;
-      top: 50%; left: 0;
-      width: 100%; height: 2px;
-      background: rgba(255, 255, 255, 0.1);
-      z-index: 0;
+      position: absolute; top: 50%; left: 0; width: 100%; height: 2px;
+      background: rgba(255, 255, 255, 0.1); z-index: 0;
     }
 
-    /* --- MOBILE OPTIMIZATION (THE FIX) --- */
+    /* CHATBOT CSS */
+    .chat-trigger {
+      position: fixed; bottom: 30px; right: 30px;
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, #2f80ed, #56ccf2);
+      border-radius: 50%;
+      box-shadow: 0 4px 15px rgba(47, 128, 237, 0.5);
+      display: flex; justify-content: center; align-items: center;
+      cursor: pointer; z-index: 1500; /* High, but below Modal (2000) */
+      transition: transform 0.3s ease;
+    }
+    .chat-trigger:hover { transform: scale(1.1); }
+    .chat-icon { width: 30px; height: 30px; fill: white; }
+
+    .chat-window {
+      position: fixed; bottom: 100px; right: 30px;
+      width: 350px; height: 500px;
+      background: #151a25;
+      border: 1px solid rgba(86, 204, 242, 0.3);
+      border-radius: 15px;
+      box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      z-index: 1500; /* Match Trigger */
+      opacity: 0; pointer-events: none; transform: translateY(20px);
+      transition: all 0.3s ease;
+    }
+    .chat-window.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+    .chat-header {
+      background: linear-gradient(to right, #1c2230, #2f80ed);
+      padding: 15px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .chat-header h3 { font-size: 1rem; color: #fff; margin: 0; }
+    .close-chat { cursor: pointer; color: #ccc; font-size: 1.2rem; }
+
+    .chat-messages {
+      flex: 1; padding: 15px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .message {
+      max-width: 80%; padding: 10px 14px; border-radius: 10px;
+      font-size: 0.9rem; line-height: 1.4;
+    }
+    .bot-msg {
+      background: rgba(86, 204, 242, 0.15); color: #e0e0e0;
+      align-self: flex-start; border-top-left-radius: 2px;
+    }
+    .user-msg {
+      background: #2f80ed; color: #fff;
+      align-self: flex-end; border-bottom-right-radius: 2px;
+    }
+    .chat-input-area {
+      padding: 15px; background: #0b0f17;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex; gap: 10px;
+    }
+    .chat-input {
+      flex: 1; background: #1e2738; border: none; outline: none;
+      color: #fff; padding: 10px; border-radius: 5px;
+    }
+    .send-btn {
+      background: #2f80ed; border: none; color: white;
+      padding: 0 15px; border-radius: 5px; cursor: pointer; font-weight: bold;
+    }
+    .send-btn:hover { background: #56ccf2; }
+
+    /* MOBILE OPTIMIZATION */
     @media (max-width: 768px) {
-      .pipeline-wrapper {
-        /* 1. Reduce height to save screen space */
-        height: 160px;
-        
-        /* 2. Use Flexbox to PERFECTLY center whatever is inside */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .pipeline-grid {
-        /* 3. Force the grid to think it is Desktop size (1000px) 
-              so that the animation math/distances remain correct. */
-        width: 1000px;
-        max-width: none; 
-
-        /* 4. Shrink the whole 1000px block down to 35% size (approx 350px)
-              This fits perfectly on mobile screens. */
-        transform: scale(0.35);
-        transform-origin: center center;
-
-        /* 5. No margins, no left/right positioning. Just pure scale in the center. */
-        margin: 0;
-      }
+      .pipeline-wrapper { height: 160px; display: flex; align-items: center; justify-content: center; }
+      .pipeline-grid { width: 1000px; max-width: none; transform: scale(0.35); transform-origin: center center; margin: 0; }
+    }
+    @media (max-width: 480px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .chat-window { width: 90%; right: 5%; bottom: 100px; height: 60vh; }
     }
   </style>
 </head>
@@ -440,7 +346,6 @@
   <img src="images/raico.png" alt="Right Logo" class="sticky-logo">
 </div>
 
-<!-- Tabs -->
 <div class="tabs">
   <div class="tab" id="goals-tab">Research Goals</div>
   <div class="tab" id="demo-tab">Autonomous Exploration in the Dark Demo</div>
@@ -448,7 +353,6 @@
   <a href="https://arxiv.org/pdf/2510.04883" target="_blank" class="tab">Research Paper</a>
 </div>
 
-<!-- Summary -->
 <section class="summary">
   <h2>About the Research</h2>
   <p>Robots struggle when the lights go out, resulting in camera failure, loss of localization, and breakdown of navigation systems.
@@ -465,12 +369,9 @@
 
 <section class="pipeline-section">
   <h2>Processing Pipeline</h2>
-  
   <div class="pipeline-wrapper">
-    
     <div class="pipeline-grid">
       <div class="connector-line"></div>
-
       <div class="traveling-dot"></div>
 
       <div class="io-stage">
@@ -478,50 +379,26 @@
         <span style="position: absolute; bottom: -30px; font-size: 0.7rem; color: #888; width: 100px;">Noisy Input</span>
       </div>
 
-      <div class="layer-box">
-        <div class="layer-shape s-32 d-1" style="--img: url('layer/00_conv2d.png')"></div>
-      </div>
-
-      <div class="layer-box">
-        <div class="layer-shape s-64 d-2" style="--img: url('layer/02_conv2d_1.png')"></div>
-      </div>
-
-      <div class="layer-box">
-        <div class="layer-shape s-128 d-3" style="--img: url('layer/04_conv2d_2.png')"></div>
-      </div>
-
-      <div class="layer-box">
-        <div class="layer-shape s-256 d-4" style="--img: url('layer/06_conv2d_3.png')"></div>
-      </div>
-
-      <div class="layer-box">
-        <div class="layer-shape s-128 d-5" style="--img: url('layer/08_conv2d_4.png')"></div>
-      </div>
-
-      <div class="layer-box">
-        <div class="layer-shape s-64 d-6" style="--img: url('layer/10_conv2d_5.png')"></div>
-      </div>
-
-      <div class="layer-box">
-        <div class="layer-shape s-32 d-7" style="--img: url('layer/12_conv2d_6.png')"></div>
-      </div>
+      <div class="layer-box"><div class="layer-shape s-32 d-1" style="--img: url('layer/00_conv2d.png')"></div></div>
+      <div class="layer-box"><div class="layer-shape s-64 d-2" style="--img: url('layer/02_conv2d_1.png')"></div></div>
+      <div class="layer-box"><div class="layer-shape s-128 d-3" style="--img: url('layer/04_conv2d_2.png')"></div></div>
+      <div class="layer-box"><div class="layer-shape s-256 d-4" style="--img: url('layer/06_conv2d_3.png')"></div></div>
+      <div class="layer-box"><div class="layer-shape s-128 d-5" style="--img: url('layer/08_conv2d_4.png')"></div></div>
+      <div class="layer-box"><div class="layer-shape s-64 d-6" style="--img: url('layer/10_conv2d_5.png')"></div></div>
+      <div class="layer-box"><div class="layer-shape s-32 d-7" style="--img: url('layer/12_conv2d_6.png')"></div></div>
 
       <div class="io-stage">
         <img src="layer/13_conv2d_7.png" class="io-img output-anim" alt="Output">
         <span style="position: absolute; bottom: -30px; font-size: 0.7rem; color: #888; width: 100px;">Clean Output</span>
       </div>
-
     </div>
-
   </div>
-
   <p style="margin-top: 15px; color: #aaa; font-size: 0.9rem;">
     <strong>Under the hood:</strong> The noisy input is compressed into latent features (bottleneck) 
     and reconstructed. Different layers reveal their internal feature maps during processing.
   </p>
 </section>
 
-<!-- Gallery -->
 <section class="gallery-section">
   <h2>Research Gallery</h2>
   <div class="gallery-grid" id="gallery"></div>
@@ -529,13 +406,11 @@
 
 <footer>© 2025 Nathan Shankar — University of Manchester</footer>
 
-<!-- IMAGE MODAL -->
 <div class="image-modal" id="imageModal">
   <span class="close-modal" id="closeImageModal">&times;</span>
   <img id="modalImg" src="" alt="">
 </div>
 
-<!-- VIDEO MODALS -->
 <div class="video-modal" id="goals-modal">
   <div class="video-container">
     <span class="close-btn" data-close="goals-modal">&times;</span>
@@ -555,8 +430,32 @@
   </div>
 </div>
 
+<div class="chat-trigger" onclick="toggleChat()">
+  <svg class="chat-icon" viewBox="0 0 24 24">
+    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+  </svg>
+</div>
+
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <h3>Research Assistant</h3>
+    <span class="close-chat" onclick="toggleChat()">&times;</span>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="message bot-msg">
+      Hello! I can explain how this research applies to your industry. 
+      <br><br>
+      <strong>Which sector do you work in?</strong> (e.g., Nuclear, Search & Rescue, Warehousing, Space)
+    </div>
+  </div>
+  <div class="chat-input-area">
+    <input type="text" id="chatInput" class="chat-input" placeholder="Type your sector..." onkeypress="handleEnter(event)">
+    <button class="send-btn" onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
 <script>
-  // Sticky header
+  // --- 1. UI LOGIC (Sticky Header, Modals) ---
   const header = document.getElementById('header');
   const stickyBar = document.getElementById('stickyBar');
   const observer = new IntersectionObserver(entries => {
@@ -567,7 +466,7 @@
   }, { threshold: Array.from({ length: 100 }, (_, i) => i / 100) });
   observer.observe(header);
 
-  // Video modal logic
+  // Video Modal Logic
   const openModal = id => {
     closeAllVideos();
     const modal = document.getElementById(id);
@@ -586,19 +485,19 @@
     if (video) { video.pause(); video.currentTime = 0; }
   };
   const closeAllVideos = () => document.querySelectorAll('.video-modal').forEach(m => closeModal(m.id));
+  
   document.getElementById('goals-tab').onclick = () => openModal('goals-modal');
   document.getElementById('demo-tab').onclick = () => openModal('demo-modal');
   document.getElementById('ir-tab').onclick = () => openModal('ir-modal');
   document.querySelectorAll('.close-btn').forEach(btn => btn.addEventListener('click', e => closeModal(e.target.dataset.close)));
   window.onclick = e => { if (e.target.classList.contains('video-modal')) closeModal(e.target.id); };
 
-  // ======== GALLERY LOGIC ========
+  // --- 2. GALLERY LOGIC ---
   const gallery = document.getElementById('gallery');
   const imageModal = document.getElementById('imageModal');
   const modalImg = document.getElementById('modalImg');
   const closeImageModal = document.getElementById('closeImageModal');
 
-  // Fisher-Yates Shuffle
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -610,7 +509,7 @@
   fetch('uploads/index.json')
     .then(res => res.json())
     .then(photos => {
-      photos = shuffleArray(photos); // Shuffle before displaying
+      photos = shuffleArray(photos);
       photos.forEach(src => {
         const div = document.createElement('div');
         div.className = 'gallery-item';
@@ -631,6 +530,164 @@
 
   closeImageModal.onclick = () => imageModal.style.display = 'none';
   window.addEventListener('click', e => { if (e.target === imageModal) imageModal.style.display = 'none'; });
+
+// --- 3. CHATBOT LOGIC ---
+  const knowledgeBase = [
+    // === GREETINGS (Hidden from lists) ===
+    {
+      type: "greeting", 
+      topic: "Greeting",
+      keywords: ["hi", "hello", "hey", "greetings", "good morning", "good evening", "yo", "test"],
+      response: "Hello! I am an AI research assistant. I can explain how this autonomous navigation technology benefits specific industries (like Nuclear, Space, or Mining) or answer technical questions (like 'Why not use a torch?'). <br><br><strong>Try asking me about a specific sector!</strong>"
+    },
+
+    // === SECTORS ===
+    {
+      type: "sector",
+      topic: "Nuclear & Radiation",
+      keywords: ["nuclear", "radiation", "plant", "atomic"],
+      response: "In the nuclear sector, this technology is vital. Radioactive containment zones are often pitch black and dangerous for humans. My research allows autonomous robots to inspect pipes and tunnels using infrared vision without needing active lighting, which reduces complexity and failure points in high-radiation zones."
+    },
+    {
+      type: "sector",
+      topic: "Warehousing & Logistics",
+      keywords: ["warehouse", "logistics", "supply chain", "factory", "storage"],
+      response: "For warehousing & logistics, this enables 'Lights-Out Automation'. Robots can operate safely in complete darkness, allowing companies to turn off warehouse lights to save massive amounts of energy while maintaining 24/7 autonomous operations without navigation loss."
+    },
+    {
+      type: "sector",
+      topic: "Search & Rescue",
+      keywords: ["rescue", "fire", "disaster", "emergency", "police", "search"],
+      response: "In search & rescue, standard cameras fail in smoke-filled or unlit collapsed buildings. By fusing infrared data with our deep learning model, rescue rovers can navigate debris in zero-visibility conditions to find survivors where humans or standard robots cannot go."
+    },
+    {
+      type: "sector",
+      topic: "Space Exploration",
+      keywords: ["space", "mars", "moon", "planetary", "nasa", "esa"],
+      response: "For space exploration, rovers often face 'Permanently Shadowed Regions' (like lunar craters) where sunlight never reaches. This research allows rovers to navigate these unknown dark terrains autonomously without relying on power-hungry floodlights or GPS."
+    },
+    {
+      type: "sector",
+      topic: "Surveillance",
+      keywords: ["security", "defense", "military", "surveillance", "guard"],
+      response: "For surveillance, this technology enables stealth. Robots can patrol perimeters in total darkness without using flashlights that would give away their position, utilizing enhanced infrared imagery to detect intruders."
+    },
+    {
+      type: "sector",
+      topic: "Mining & Underground",
+      keywords: ["mining", "underground", "cave", "tunnel"],
+      response: "In mining, deep underground tunnels are often poorly lit and hazardous. This vision system allows autonomous excavators and inspection drones to map and navigate unstable mine shafts without requiring extensive external lighting infrastructure."
+    },
+
+    // === COMMON RESEARCH QUESTIONS ===
+    {
+      type: "faq",
+      topic: "Why not use a torch/flashlight?",
+      keywords: ["torch", "light", "flashlight", "lamp", "illuminat", "spotlight"],
+      response: "Great question! Using active lighting (a torch) has three major downsides: <br>1. Power: High-intensity lights drain the robot's battery quickly.<br>2. Backscatter: In fog, smoke, or dust, visible light reflects off particles and blinds the camera (like high beams in fog).<br>3. Stealth: In security or nature observation, visible light disturbs the environment or reveals the robot's location."
+    },
+    {
+      type: "faq",
+      topic: "Why not use LiDAR?",
+      keywords: ["lidar", "laser", "scanner"],
+      response: "LiDAR is accurate but has limitations. It is often heavy, expensive, and power-hungry compared to cameras. Furthermore, LiDAR only provides geometric data (shapes), whereas my vision-based approach provides semantic data (understanding what an object is), which is crucial for interacting with the environment."
+    },
+    {
+      type: "faq",
+      topic: "Why not use GPS?",
+      keywords: ["gps", "satellite", "location"],
+      response: "GPS signals cannot penetrate deep underground, inside thick concrete buildings, or underwater. My research focuses on GPS-denied environments, requiring the robot to calculate its position solely based on what it 'sees' relative to its starting point."
+    },
+    {
+      type: "faq",
+      topic: "Why not use Thermal Imaging?",
+      keywords: ["thermal", "heat", "temperature"],
+      response: "Thermal cameras are great for detecting heat (like people or engines), but they struggle with navigation. A cold wall looks the same as a cold floor in thermal imaging, making it hard to find edges or obstacles. My research uses Near-Infrared (NIR) or enhanced visual data, which preserves textures and edges necessary for navigation."
+    },
+    {
+      type: "faq",
+      topic: "Does this require a supercomputer?",
+      keywords: ["compute", "gpu", "processor", "heavy", "slow", "fast", "speed"],
+      response: "No, a key goal of this research is efficiency. The deep learning models are optimized to run on edge devices (like an NVIDIA Jetson or Raspberry Pi) that can fit on a small drone or rover, rather than requiring a massive server."
+    },
+    {
+      type: "faq",
+      topic: "How is this different from Night Vision Goggles?",
+      keywords: ["night vision", "goggles", "nvg", "green"],
+      response: "Standard night vision (image intensification) amplifies existing light, but it often results in grainy, low-contrast images that are hard for computers to analyze. My method uses Deep Learning to mathematically reconstruct a clean, sharp image from noisy data, making it much better for autonomous algorithms to understand."
+    },
+    {
+      type: "faq",
+      topic: "Can it recognize specific objects?",
+      keywords: ["recognize", "identify", "objects", "detect"],
+      response: "Yes! Once the image is enhanced by the pipeline, we can run standard object detection algorithms (like YOLO) on it. In our tests, we successfully detected people, chairs, and tools in near-total darkness where standard detection failed completely."
+    }
+  ];
+
+  const chatWindow = document.getElementById('chatWindow');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatInput = document.getElementById('chatInput');
+
+  function toggleChat() {
+    chatWindow.classList.toggle('active');
+    if (chatWindow.classList.contains('active')) chatInput.focus();
+  }
+
+  function handleEnter(e) {
+    if (e.key === 'Enter') sendMessage();
+  }
+
+  function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    addMessage(text, 'user-msg');
+    chatInput.value = '';
+    setTimeout(() => {
+      const response = generateResponse(text);
+      addMessage(response, 'bot-msg');
+    }, 600);
+  }
+
+  function addMessage(html, type) {
+    const div = document.createElement('div');
+    div.className = `message ${type}`;
+    div.innerHTML = html;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function generateResponse(input) {
+    const lowerInput = input.toLowerCase();
+    
+    // 1. Try to find a match
+    for (let entry of knowledgeBase) {
+      if (entry.keywords.some(keyword => lowerInput.includes(keyword))) {
+        return entry.response;
+      }
+    }
+    
+    // 2. If no match, generate dynamic lists separating Sectors from FAQs
+    // Note: We deliberately exclude 'greeting' types here so "Greeting" doesn't show up as a research topic.
+    const sectorList = knowledgeBase
+      .filter(entry => entry.type === 'sector')
+      .map(entry => `<li>${entry.topic}</li>`)
+      .join('');
+
+    const faqList = knowledgeBase
+      .filter(entry => entry.type === 'faq')
+      .map(entry => `<li>${entry.topic}</li>`)
+      .join('');
+
+    return `I haven't been trained on that specific input yet. However, I can discuss:
+            <br><br><strong>Industry Applications:</strong>
+            <ul style="margin-top:5px; padding-left:20px; text-align:left;">
+              ${sectorList}
+            </ul>
+            <br><strong>Common Questions:</strong>
+            <ul style="margin-top:5px; padding-left:20px; text-align:left;">
+              ${faqList}
+            </ul>`;
+  }
 </script>
 </body>
 </html>
