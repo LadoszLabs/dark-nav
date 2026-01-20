@@ -136,14 +136,36 @@
     .close-btn { position: absolute; top: 10px; right: 15px; color: #fff; font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
     .close-btn:hover { color: #56ccf2; }
 
+    /* --- MOBILE OPTIMIZATION --- */
     @media (max-width: 768px) {
-      .tabs { flex-direction: column; gap: 25px; }
-      .tab { width: 80%; }
-      iframe, video { height: 250px; }
-      .corner-logo { display: none; }
-      .sticky-bar { padding: 8px 20px; }
-      .sticky-title {font-size: 0.85rem;}
-      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .pipeline-wrapper {
+        /* 1. Define a safe height for the animation area */
+        height: 160px; 
+        overflow: hidden; 
+        
+        /* 2. Use Flexbox to force the grid to the center of the screen */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .pipeline-grid {
+        /* 3. Force Desktop Width: Keep internal math (1000px) intact */
+        width: 1000px;
+        max-width: none;
+        
+        /* 4. SHRINK IT: Scale down to ~35% so 1000px fits into ~350px screens */
+        transform: scale(0.35);
+        
+        /* 5. Anchor the shrink to the center */
+        transform-origin: center center;
+        
+        /* 6. Ensure no offsets or positioning interfere */
+        margin: 0;
+        position: relative; /* Keep it in flow, not absolute */
+        left: auto;
+        top: auto;
+      }
     }
     
     @media (max-width: 480px) {
@@ -165,6 +187,7 @@
       margin-bottom: 40px;
     }
 
+    /* THE WRAPPER: Now acts as a Flex container to center content perfectly */
     .pipeline-wrapper {
       position: relative;
       width: 100%;
@@ -174,17 +197,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden; /* Ensures the scaled content never spills out */
     }
 
-    /* --- THE GRID SYSTEM (Crucial for Sync) --- */
-    /* 9 Equal Columns: Input, 7 Layers, Output */
+    /* --- THE GRID SYSTEM --- */
     .pipeline-grid {
       display: grid;
       grid-template-columns: repeat(9, 1fr); 
       align-items: center;
       justify-items: center;
-      width: 90%; /* Defines the track length */
-      max-width: 1000px;
+      width: 1000px; /* Fixed width helps maintain animation consistency */
+      max-width: 95%; /* Responsive on Desktop */
       position: relative;
     }
 
@@ -220,44 +243,32 @@
       95%, 100% { transform: scale(1); opacity: 1; }
     }
 
-    /* --- 2. THE DOT (The Master Timekeeper) --- */
-    /* It moves 1 step every 10% of the timeline (2 seconds) */
+    /* --- 2. THE DOT --- */
     .traveling-dot {
       position: absolute;
       top: 50%;
-      left: 0; /* Starts at column 1 center roughly */
+      left: 0; 
       width: 14px; height: 14px;
       background: #56ccf2;
       border-radius: 50%;
-      transform: translate(-50%, -50%); /* Center on the grid line */
+      transform: translate(-50%, -50%);
       box-shadow: 0 0 15px #56ccf2;
       z-index: 50;
       pointer-events: none;
       animation: dotMove 20s linear infinite;
     }
 
-    /* TIMELINE (20s Total):
-      Grid has 9 points. Distance per step approx 12.5% (100% / 8 intervals).
-      Actually, let's map precise percentages based on 9 columns.
-      Col 1 (Input): ~5.5%
-      Col 2 (Enc1): ~16.6%
-      ... 
-      To be safe, we animate 'left' based on percentage of container.
-      0% = Input Center
-      100% = Output Center
-    */
-
     @keyframes dotMove {
       /* Step 0: At Input */
       0%   { left: 0%; opacity: 0; }
-      2%   { opacity: 1; } /* Appear */
-      5%   { left: 0%; opacity: 1; } /* Wait for shrink */
+      2%   { opacity: 1; } 
+      5%   { left: 0%; opacity: 1; } 
       
       /* Move to Enc1 (12.5%) */
       9%   { left: 12.5%; opacity: 1; }
-      10%  { opacity: 0; } /* HIDE (Become image) */
-      15%  { opacity: 0; } /* STAY HIDDEN */
-      16%  { opacity: 1; } /* REAPPEAR */
+      10%  { opacity: 0; } 
+      15%  { opacity: 0; } 
+      16%  { opacity: 1; } 
 
       /* Move to Enc2 (25%) */
       19%  { left: 25%; opacity: 1; }
@@ -297,11 +308,11 @@
 
       /* Move to Output (100%) */
       84%  { left: 100%; opacity: 1; }
-      85%  { opacity: 0; } /* Dissolve into Output */
+      85%  { opacity: 0; } 
       100% { left: 100%; opacity: 0; }
     }
 
-    /* --- 3. LAYERS (The Targets) --- */
+    /* --- 3. LAYERS --- */
     .layer-box {
       position: relative;
       display: flex;
@@ -309,7 +320,6 @@
       align-items: center;
       width: 100%;
       height: 100%;
-      /* Ensure no overflow hiding on the container */
       overflow: visible; 
     }
 
@@ -318,15 +328,12 @@
       border: 1px solid #2f80ed;
       border-radius: 4px;
       position: relative;
-      z-index: 10; /* Base Z-Index */
+      z-index: 10;
       transition: border-color 0.2s;
-      
-      /* ANIMATION 1: Handle Z-Index so expanding image sits on top of neighbors */
       animation: zIndexBump 20s linear infinite;
       animation-delay: var(--delay);
     }
 
-    /* THE EXPANDING IMAGE */
     .layer-shape::after {
       content: "";
       position: absolute;
@@ -338,53 +345,34 @@
       background-size: cover;
       background-position: center;
       border: 2px solid #56ccf2;
-      box-shadow: 0 0 25px rgba(0,0,0,0.9); /* Stronger shadow to separate from background */
+      box-shadow: 0 0 25px rgba(0,0,0,0.9);
       
       opacity: 0;
       pointer-events: none;
-      
-      /* ANIMATION 2: Handle Size/Opacity */
       animation: popImage 20s linear infinite;
       animation-delay: var(--delay);
     }
 
-    /* --- KEYFRAMES --- */
-
-    /* The Parent Animation: Jump to the front ONLY when active */
     @keyframes zIndexBump {
       0% { z-index: 10; border-color: #2f80ed; }
-      
-      /* Start Bump (Matches pop start) */
       0.1% { z-index: 500; border-color: #fff; } 
-      
-      /* End Bump (Matches pop end) */
       5% { z-index: 10; border-color: #2f80ed; } 
-      
       100% { z-index: 10; }
     }
 
-    /* The Child Animation: Expand the image */
     @keyframes popImage {
       0% { opacity: 0; width: 100%; height: 100%; }
-      
-      /* 1. Reveal */
       0.1% { opacity: 1; background-color: #000; }
-      
-      /* 2. Expand & Hold */
       1%, 4% { opacity: 1; width: 150px; height: 150px; } 
-      
-      /* 3. Hide */
       5% { opacity: 0; width: 100%; height: 100%; }
       100% { opacity: 0; }
     }
 
-    /* Sizing Helpers */
     .s-32  { width: 20px; height: 90px; }
     .s-64  { width: 25px; height: 70px; }
     .s-128 { width: 30px; height: 50px; }
     .s-256 { width: 40px; height: 40px; border-color: #fff; }
 
-    /* Delays (Must match HTML) */
     .d-1 { --delay: 2s; }
     .d-2 { --delay: 4s; }
     .d-3 { --delay: 6s; }
@@ -393,22 +381,40 @@
     .d-6 { --delay: 12s; }
     .d-7 { --delay: 14s; }
 
-    /* Connectors are now pseudo-elements of the grid for simplicity, or just simple divs */
     .connector-line {
       position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 2px;
+      top: 50%; left: 0;
+      width: 100%; height: 2px;
       background: rgba(255, 255, 255, 0.1);
       z-index: 0;
     }
 
+    /* --- MOBILE OPTIMIZATION (THE FIX) --- */
     @media (max-width: 768px) {
-      .pipeline-grid { width: 95%; }
-      .pipeline-wrapper { height: 180px; }
-      /* Scale down on mobile */
-      .pipeline-grid { transform: scale(0.6); transform-origin: center; width: 160%; margin-left: -30%; }
+      .pipeline-wrapper {
+        /* 1. Reduce height to save screen space */
+        height: 160px;
+        
+        /* 2. Use Flexbox to PERFECTLY center whatever is inside */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .pipeline-grid {
+        /* 3. Force the grid to think it is Desktop size (1000px) 
+              so that the animation math/distances remain correct. */
+        width: 1000px;
+        max-width: none; 
+
+        /* 4. Shrink the whole 1000px block down to 35% size (approx 350px)
+              This fits perfectly on mobile screens. */
+        transform: scale(0.35);
+        transform-origin: center center;
+
+        /* 5. No margins, no left/right positioning. Just pure scale in the center. */
+        margin: 0;
+      }
     }
   </style>
 </head>
