@@ -626,11 +626,11 @@
 </div>
 
 <script>
-  // ================= 1. UI LOGIC (Sticky Header, Citation, Modals) =================
-  
-  // Sticky Header
+  // ================= 1. UI LOGIC =================
   const header = document.getElementById('header');
   const stickyBar = document.getElementById('stickyBar');
+  
+  // Sticky Header Observer
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (!entry.isIntersecting || entry.intersectionRatio < 1) stickyBar.classList.add('visible');
@@ -639,7 +639,7 @@
   }, { threshold: Array.from({ length: 100 }, (_, i) => i / 100) });
   observer.observe(header);
 
-  // Citation Logic
+  // Citation Button
   function copyBibtex() {
     const bibtex = `@article{shankar2025autonomous,
   title={Autonomous Navigation in Dark Unknown Environments using Vision},
@@ -655,7 +655,7 @@
     });
   }
 
-  // Video Modal Logic
+  // Video Modals
   const openModal = id => {
     closeAllVideos();
     const modal = document.getElementById(id);
@@ -714,35 +714,50 @@
     })
     .catch(err => {
       console.error("Could not load image list:", err);
-      gallery.innerHTML = "<p style='color:#999;'>No images found in uploads folder.</p>";
+      // Fail silently or show placeholder
     });
 
   closeImageModal.onclick = () => imageModal.style.display = 'none';
   window.addEventListener('click', e => { if (e.target === imageModal) imageModal.style.display = 'none'; });
 
-  // ================= 3. BEFORE/AFTER SLIDER LOGIC =================
+
+  // ================= 3. BEFORE/AFTER SLIDER LOGIC (FIXED) =================
+  // We wait for window.onload to ensure images are ready and dimensions are correct
+  window.addEventListener("load", function() {
+    initComparisons();
+  });
+
   function initComparisons() {
     var x, i;
     x = document.getElementsByClassName("img-comp-overlay");
     for (i = 0; i < x.length; i++) {
       compareImages(x[i]);
     }
+    
     function compareImages(img) {
       var slider, clicked = 0, w, h;
-      w = img.offsetWidth;
-      h = img.offsetHeight;
+      
+      // Calculate dimensions from the CONTAINER, not the image, for stability
+      const container = img.parentElement;
+      w = container.offsetWidth;
+      h = container.offsetHeight;
+      
+      // Set initial width to 50%
       img.style.width = (w / 2) + "px";
       
+      // Create slider
       slider = document.createElement("DIV");
       slider.setAttribute("class", "img-comp-slider");
       img.parentElement.insertBefore(slider, img);
       
-      // Center slider
+      // Center slider handle
       slider.style.top = (h / 2) - (slider.offsetHeight / 2) + "px";
       slider.style.left = (w / 2) - (slider.offsetWidth / 2) + "px";
       
+      // Mouse Events
       slider.addEventListener("mousedown", slideReady);
       window.addEventListener("mouseup", slideFinish);
+      // Touch Events
       slider.addEventListener("touchstart", slideReady);
       window.addEventListener("touchend", slideFinish);
 
@@ -752,125 +767,86 @@
         window.addEventListener("mousemove", slideMove);
         window.addEventListener("touchmove", slideMove);
       }
+      
       function slideFinish() {
         clicked = 0;
       }
+      
       function slideMove(e) {
-        var pos;
         if (clicked == 0) return false;
-        pos = getCursorPos(e);
+        
+        // Recalculate width on every move to handle window resizing
+        w = container.offsetWidth; 
+        
+        var pos = getCursorPos(e);
         if (pos < 0) pos = 0;
         if (pos > w) pos = w;
+        
         slide(pos);
       }
+      
       function getCursorPos(e) {
-        var a, x = 0;
         e = (e.changedTouches) ? e.changedTouches[0] : e;
-        a = img.getBoundingClientRect();
-        x = e.pageX - a.left;
-        x = x - window.pageXOffset;
+        // Use clientX and getBoundingClientRect for accurate position relative to viewport
+        var rect = container.getBoundingClientRect();
+        var x = e.clientX - rect.left;
         return x;
       }
+      
       function slide(x) {
         img.style.width = x + "px";
         slider.style.left = img.offsetWidth - (slider.offsetWidth / 2) + "px";
       }
     }
   }
-  // Initialize slider when page loads
-  initComparisons();
 
 
   // ================= 4. CHATBOT LOGIC =================
   const knowledgeBase = [
-    // === GREETINGS (Hidden from lists) ===
+    // === GREETINGS ===
     {
       type: "greeting", 
       topic: "Greeting",
-      keywords: ["hi", "hello", "hey", "greetings", "good morning", "good evening", "yo", "test"],
-      response: "Hello! I am an AI research assistant. I can explain how this autonomous navigation technology benefits specific industries (like Nuclear, Space, or Mining) or answer technical questions (like 'Why not use a torch?'). <br><br><strong>Try using the buttons below or asking about a specific sector!</strong>"
+      keywords: ["hi", "hello", "hey", "greetings", "good morning", "yo", "test"],
+      response: "Hello! I am an AI research assistant. I can explain how this technology benefits industries (like Nuclear or Space) or answer technical questions.<br><br><strong>Try using the buttons below!</strong>"
     },
-
     // === SECTORS ===
     {
-      type: "sector",
-      topic: "Nuclear & Radiation",
-      keywords: ["nuclear", "radiation", "plant", "atomic"],
-      response: "In the **Nuclear** sector, this technology is vital. Radioactive containment zones are often pitch black and dangerous for humans. My research allows autonomous robots to inspect pipes and tunnels using infrared vision without needing active lighting, which reduces complexity and failure points in high-radiation zones."
+      type: "sector", topic: "Nuclear & Radiation", keywords: ["nuclear", "radiation", "plant", "atomic"],
+      response: "In **Nuclear** sectors, radioactive zones are often dark and dangerous. This research allows robots to inspect pipes and tunnels using infrared vision without needing lighting, reducing failure points."
     },
     {
-      type: "sector",
-      topic: "Warehousing & Logistics",
-      keywords: ["warehouse", "logistics", "supply chain", "factory", "storage"],
-      response: "For **Warehousing & Logistics**, this enables 'Lights-Out Automation'. Robots can operate safely in complete darkness, allowing companies to turn off warehouse lights to save massive amounts of energy while maintaining 24/7 autonomous operations without navigation loss."
+      type: "sector", topic: "Warehousing", keywords: ["warehouse", "logistics", "factory", "storage"],
+      response: "For **Warehousing**, this enables 'Lights-Out Automation'. Robots can operate in complete darkness, saving massive amounts of energy while maintaining 24/7 operations."
     },
     {
-      type: "sector",
-      topic: "Search & Rescue",
-      keywords: ["rescue", "fire", "disaster", "emergency", "police", "search"],
-      response: "In **Search & Rescue**, standard cameras fail in smoke-filled or unlit collapsed buildings. By fusing infrared data with our deep learning model, rescue rovers can navigate debris in zero-visibility conditions to find survivors where humans or standard robots cannot go."
+      type: "sector", topic: "Search & Rescue", keywords: ["rescue", "fire", "disaster", "emergency"],
+      response: "In **Search & Rescue**, standard cameras fail in smoke or darkness. Fusing infrared data allows rescue rovers to navigate debris in zero-visibility conditions to find survivors."
     },
     {
-      type: "sector",
-      topic: "Space Exploration",
-      keywords: ["space", "mars", "moon", "planetary", "nasa", "esa"],
-      response: "For **Space Exploration**, rovers often face 'Permanently Shadowed Regions' (like lunar craters) where sunlight never reaches. This research allows rovers to navigate these unknown dark terrains autonomously without relying on power-hungry floodlights or GPS."
+      type: "sector", topic: "Space Exploration", keywords: ["space", "mars", "moon", "nasa", "planet"],
+      response: "For **Space**, rovers often face permanently shadowed craters. This allows autonomous navigation in unknown dark terrains without draining battery on floodlights."
     },
     {
-      type: "sector",
-      topic: "Surveillance",
-      keywords: ["security", "defense", "military", "surveillance", "guard"],
-      response: "For **Surveillance**, this technology enables stealth. Robots can patrol perimeters in total darkness without using flashlights that would give away their position, utilizing enhanced infrared imagery to detect intruders."
+      type: "sector", topic: "Surveillance", keywords: ["security", "defense", "military", "guard"],
+      response: "For **Security**, this enables stealth. Robots can patrol in total darkness without using flashlights that reveal their position."
     },
     {
-      type: "sector",
-      topic: "Mining & Underground",
-      keywords: ["mining", "underground", "cave", "tunnel"],
-      response: "In **Mining**, deep underground tunnels are often poorly lit and hazardous. This vision system allows autonomous excavators and inspection drones to map and navigate unstable mine shafts without requiring extensive external lighting infrastructure."
+      type: "sector", topic: "Mining", keywords: ["mining", "underground", "cave", "tunnel"],
+      response: "In **Mining**, tunnels are hazardous and poorly lit. This system allows drones to map unstable shafts without extensive lighting infrastructure."
     },
-
-    // === COMMON RESEARCH QUESTIONS ===
+    // === FAQ ===
     {
-      type: "faq",
-      topic: "Why not use a torch/flashlight?",
-      keywords: ["torch", "light", "flashlight", "lamp", "illuminat", "spotlight"],
-      response: "Great question! Using active lighting (a torch) has three major downsides: <br>1. **Power:** High-intensity lights drain the robot's battery quickly.<br>2. **Backscatter:** In fog, smoke, or dust, visible light reflects off particles and blinds the camera (like high beams in fog).<br>3. **Stealth:** In security or nature observation, visible light disturbs the environment or reveals the robot's location."
+      type: "faq", topic: "Why not a Torch?", keywords: ["torch", "light", "flashlight", "lamp"],
+      response: "Active lighting drains battery, blinds cameras in fog/dust (backscatter), and ruins stealth operations."
     },
     {
-      type: "faq",
-      topic: "Why not use LiDAR?",
-      keywords: ["lidar", "laser", "scanner"],
-      response: "LiDAR is accurate but has limitations. It is often **heavy, expensive, and power-hungry** compared to cameras. Furthermore, LiDAR only provides geometric data (shapes), whereas my vision-based approach provides semantic data (understanding *what* an object is), which is crucial for interacting with the environment."
+      type: "faq", topic: "Why not LiDAR?", keywords: ["lidar", "laser", "scanner"],
+      response: "LiDAR is heavy, expensive, and power-hungry. It also provides only shape data, lacking the semantic texture understanding that vision provides."
     },
     {
-      type: "faq",
-      topic: "Why not use GPS?",
-      keywords: ["gps", "satellite", "location"],
-      response: "GPS signals cannot penetrate deep underground, inside thick concrete buildings, or underwater. My research focuses on **GPS-denied environments**, requiring the robot to calculate its position solely based on what it 'sees' relative to its starting point."
-    },
-    {
-      type: "faq",
-      topic: "Why not use Thermal Imaging?",
-      keywords: ["thermal", "heat", "temperature"],
-      response: "Thermal cameras are great for detecting heat (like people or engines), but they struggle with **navigation**. A cold wall looks the same as a cold floor in thermal imaging, making it hard to find edges or obstacles. My research uses Near-Infrared (NIR) or enhanced visual data, which preserves textures and edges necessary for navigation."
-    },
-    {
-      type: "faq",
-      topic: "Does this require a supercomputer?",
-      keywords: ["compute", "gpu", "processor", "heavy", "slow", "fast", "speed"],
-      response: "No, a key goal of this research is **efficiency**. The deep learning models are optimized to run on edge devices (like an NVIDIA Jetson or Raspberry Pi) that can fit on a small drone or rover, rather than requiring a massive server."
-    },
-    {
-      type: "faq",
-      topic: "How is this different from Night Vision Goggles?",
-      keywords: ["night vision", "goggles", "nvg", "green"],
-      response: "Standard night vision (image intensification) amplifies existing light, but it often results in grainy, low-contrast images that are hard for *computers* to analyze. My method uses **Deep Learning** to mathematically reconstruct a clean, sharp image from noisy data, making it much better for autonomous algorithms to understand."
-    },
-    {
-      type: "faq",
-      topic: "Can it recognize specific objects?",
-      keywords: ["recognize", "identify", "objects", "detect"],
-      response: "Yes! Once the image is enhanced by the pipeline, we can run standard object detection algorithms (like YOLO) on it. In our tests, we successfully detected people, chairs, and tools in near-total darkness where standard detection failed completely."
+      type: "faq", topic: "Why not GPS?", keywords: ["gps", "satellite", "location"],
+      response: "GPS doesn't work underground, indoors, or on other planets. This system uses visual data to calculate position."
     }
   ];
 
@@ -887,7 +863,6 @@
     if (e.key === 'Enter') sendMessage();
   }
   
-  // Chip Click Handler
   function sendChip(text) {
     chatInput.value = text;
     sendMessage();
@@ -915,33 +890,18 @@
   function generateResponse(input) {
     const lowerInput = input.toLowerCase();
     
-    // 1. Try to find a match
     for (let entry of knowledgeBase) {
       if (entry.keywords.some(keyword => lowerInput.includes(keyword))) {
         return entry.response;
       }
     }
     
-    // 2. Fallback: Dynamic Lists
-    const sectorList = knowledgeBase
-      .filter(entry => entry.type === 'sector')
-      .map(entry => `<li>${entry.topic}</li>`)
-      .join('');
+    const sectorList = knowledgeBase.filter(e => e.type === 'sector').map(e => `<li>${e.topic}</li>`).join('');
+    const faqList = knowledgeBase.filter(e => e.type === 'faq').map(e => `<li>${e.topic}</li>`).join('');
 
-    const faqList = knowledgeBase
-      .filter(entry => entry.type === 'faq')
-      .map(entry => `<li>${entry.topic}</li>`)
-      .join('');
-
-    return `I haven't been trained on that specific input yet. However, I can discuss:
-            <br><br><strong>Industry Applications:</strong>
-            <ul style="margin-top:5px; padding-left:20px; text-align:left;">
-              ${sectorList}
-            </ul>
-            <br><strong>Common Questions:</strong>
-            <ul style="margin-top:5px; padding-left:20px; text-align:left;">
-              ${faqList}
-            </ul>`;
+    return `I haven't been trained on that yet. Try asking about:<br><br>
+            <strong>Industries:</strong><ul style="padding-left:20px;">${sectorList}</ul>
+            <br><strong>Tech Questions:</strong><ul style="padding-left:20px;">${faqList}</ul>`;
   }
 </script>
 </body>
