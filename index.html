@@ -803,51 +803,275 @@
 
   // ================= 4. CHATBOT LOGIC =================
   const knowledgeBase = [
-    // === GREETINGS ===
+
+
+    // === GREETINGS (Hidden from lists) ===
+
+
     {
+
+
       type: "greeting", 
+
+
       topic: "Greeting",
-      keywords: ["hi", "hello", "hey", "greetings", "good morning", "yo", "test"],
-      response: "Hello! I am an AI research assistant. I can explain how this technology benefits industries (like Nuclear or Space) or answer technical questions.<br><br><strong>Try using the buttons below!</strong>"
+
+
+      keywords: ["hi", "hello", "hey", "greetings", "good morning", "good evening", "yo", "test"],
+
+
+      response: "Hello! I am an AI research assistant. I can explain how this autonomous navigation technology benefits specific industries (like Nuclear, Space, or Mining) or answer technical questions (like 'Why not use a torch?'). <br><br><strong>Try asking me about a specific sector!</strong>"
+
+
     },
+
+
+
+
+
     // === SECTORS ===
+
+
     {
-      type: "sector", topic: "Nuclear & Radiation", keywords: ["nuclear", "radiation", "plant", "atomic"],
-      response: "In **Nuclear** sectors, radioactive zones are often dark and dangerous. This research allows robots to inspect pipes and tunnels using infrared vision without needing lighting, reducing failure points."
+
+
+      type: "sector",
+
+
+      topic: "Nuclear & Radiation",
+
+
+      keywords: ["nuclear", "radiation", "plant", "atomic"],
+
+
+      response: "In the nuclear sector, this technology is vital. Radioactive containment zones are often pitch black and dangerous for humans. My research allows autonomous robots to inspect pipes and tunnels using infrared vision without needing active lighting, which reduces complexity and failure points in high-radiation zones."
+
+
     },
+
+
     {
-      type: "sector", topic: "Warehousing", keywords: ["warehouse", "logistics", "factory", "storage"],
-      response: "For **Warehousing**, this enables 'Lights-Out Automation'. Robots can operate in complete darkness, saving massive amounts of energy while maintaining 24/7 operations."
+
+
+      type: "sector",
+
+
+      topic: "Warehousing & Logistics",
+
+
+      keywords: ["warehouse", "logistics", "supply chain", "factory", "storage"],
+
+
+      response: "For warehousing & logistics, this enables 'Lights-Out Automation'. Robots can operate safely in complete darkness, allowing companies to turn off warehouse lights to save massive amounts of energy while maintaining 24/7 autonomous operations without navigation loss."
+
+
     },
+
+
     {
-      type: "sector", topic: "Search & Rescue", keywords: ["rescue", "fire", "disaster", "emergency"],
-      response: "In **Search & Rescue**, standard cameras fail in smoke or darkness. Fusing infrared data allows rescue rovers to navigate debris in zero-visibility conditions to find survivors."
+
+
+      type: "sector",
+
+
+      topic: "Search & Rescue",
+
+
+      keywords: ["rescue", "fire", "disaster", "emergency", "police", "search"],
+
+
+      response: "In search & rescue, standard cameras fail in low-light collapsed buildings. By fusing infrared data with our deep learning model, rescue rovers can navigate debris in zero-visibility conditions to find survivors where humans or standard robots cannot go."
+
+
     },
+
+
     {
-      type: "sector", topic: "Space Exploration", keywords: ["space", "mars", "moon", "nasa", "planet"],
-      response: "For **Space**, rovers often face permanently shadowed craters. This allows autonomous navigation in unknown dark terrains without draining battery on floodlights."
+
+
+      type: "sector",
+
+
+      topic: "Space Exploration",
+
+
+      keywords: ["space", "mars", "moon", "planetary", "nasa", "esa"],
+
+
+      response: "For space exploration, rovers often face 'Permanently Shadowed Regions' (like lunar craters) where sunlight never reaches. This research allows rovers to navigate these unknown dark terrains autonomously without relying on power-hungry floodlights or GPS."
+
+
     },
+
+
     {
-      type: "sector", topic: "Surveillance", keywords: ["security", "defense", "military", "guard"],
-      response: "For **Security**, this enables stealth. Robots can patrol in total darkness without using flashlights that reveal their position."
+
+
+      type: "sector",
+
+
+      topic: "Surveillance",
+
+
+      keywords: ["security", "defense", "military", "surveillance", "guard"],
+
+
+      response: "For surveillance, this technology enables stealth. Robots can patrol perimeters in total darkness without using flashlights that would give away their position, utilizing enhanced infrared imagery to detect intruders."
+
+
     },
+
+
     {
-      type: "sector", topic: "Mining", keywords: ["mining", "underground", "cave", "tunnel"],
-      response: "In **Mining**, tunnels are hazardous and poorly lit. This system allows drones to map unstable shafts without extensive lighting infrastructure."
+
+
+      type: "sector",
+
+
+      topic: "Mining & Underground",
+
+
+      keywords: ["mining", "underground", "cave", "tunnel"],
+
+
+      response: "In mining, deep underground tunnels are often poorly lit and hazardous. This vision system allows autonomous excavators and inspection drones to map and navigate unstable mine shafts without requiring extensive external lighting infrastructure."
+
+
     },
-    // === FAQ ===
+
+
+
+
+
+    // === COMMON RESEARCH QUESTIONS ===
+
+
     {
-      type: "faq", topic: "Why not a Torch?", keywords: ["torch", "light", "flashlight", "lamp"],
-      response: "Active lighting drains battery, blinds cameras in fog/dust (backscatter), and ruins stealth operations."
+
+
+      type: "faq",
+
+
+      topic: "Why not use a torch/flashlight?",
+
+
+      keywords: ["torch", "light", "flashlight", "lamp", "illuminat", "spotlight"],
+
+
+      response: "Great question! Using active lighting (a torch) has three major downsides: <br>1. Power: High-intensity lights drain the robot's battery quickly.<br>2. Backscatter: In dusty environments, visible light reflects off particles and blinds the camera by producing noisy images.<br>3. Stealth: In security or nature observation, visible light disturbs the environment or reveals the robot's location."
+
+
     },
+
+
     {
-      type: "faq", topic: "Why not LiDAR?", keywords: ["lidar", "laser", "scanner"],
-      response: "LiDAR is heavy, expensive, and power-hungry. It also provides only shape data, lacking the semantic texture understanding that vision provides."
+
+
+      type: "faq",
+
+
+      topic: "Why not use LiDAR?",
+
+
+      keywords: ["lidar", "laser", "scanner"],
+
+
+      response: "LiDAR is accurate but has limitations. It is often heavy, expensive, and power-hungry compared to cameras. Furthermore, LiDAR only provides geometric data (shapes), whereas my vision-based approach provides semantic data (understanding what an object is), which is crucial for interacting with the environment."
+
+
     },
+
+
     {
-      type: "faq", topic: "Why not GPS?", keywords: ["gps", "satellite", "location"],
-      response: "GPS doesn't work underground, indoors, or on other planets. This system uses visual data to calculate position."
+
+
+      type: "faq",
+
+
+      topic: "Why not use GPS?",
+
+
+      keywords: ["gps", "satellite", "location"],
+
+
+      response: "GPS signals cannot penetrate deep underground, inside thick concrete buildings, or underwater. My research focuses on GPS-denied environments, requiring the robot to calculate its position solely based on what it 'sees' relative to its starting point."
+
+
+    },
+
+
+    {
+
+
+      type: "faq",
+
+
+      topic: "Why not use Thermal Imaging?",
+
+
+      keywords: ["thermal", "heat", "temperature"],
+
+
+      response: "Thermal cameras are great for detecting heat (like people or engines), but they struggle with navigation. A cold wall looks the same as a cold floor in thermal imaging, making it hard to find edges or obstacles. My research uses Near-Infrared (NIR) or enhanced visual data, which preserves textures and edges necessary for navigation."
+
+
+    },
+
+
+    {
+
+
+      type: "faq",
+
+
+      topic: "Does this require a supercomputer?",
+
+
+      keywords: ["compute", "gpu", "processor", "heavy", "slow", "fast", "speed"],
+
+
+      response: "No, a key goal of this research is efficiency. The deep learning models are optimized to run on edge devices (like an NVIDIA Jetson or Raspberry Pi) that can fit on a small drone or rover, rather than requiring a massive server."
+
+
+    },
+
+
+    {
+
+
+      type: "faq",
+
+
+      topic: "How is this different from Night Vision Goggles?",
+
+
+      keywords: ["night vision", "goggles", "nvg", "green"],
+
+
+      response: "Standard night vision (image intensification) amplifies existing light, but it often results in grainy, low-contrast images that are hard for computers to analyze. My method uses Deep Learning to mathematically reconstruct a clean, sharp image from noisy data, making it much better for autonomous algorithms to understand."
+
+
+    },
+
+
+    {
+
+
+      type: "faq",
+
+
+      topic: "Can it recognize specific objects?",
+
+
+      keywords: ["recognize", "identify", "objects", "detect"],
+
+
+      response: "Yes! Once the image is enhanced by the pipeline, we can run standard object detection algorithms (like YOLO) on it. In our tests, we successfully detected people, chairs, and tools in near-total darkness where standard detection failed completely."
+
+
     }
+
+
   ];
 
   const chatWindow = document.getElementById('chatWindow');
